@@ -2,7 +2,7 @@
 
 class Tournament():
 
-    HASTAGS_BY_ID = {'3' : ['#Libertadores', '#CopaLibertadores'], '1276' : ['CopaDeLaLiga']}
+    HASTAGS_BY_ID = {'3' : ['#Libertadores', '#CopaLibertadores'], '1276' : ['#CopaDeLaLiga']}
 
     def __init__(self, id):
         self.id = id

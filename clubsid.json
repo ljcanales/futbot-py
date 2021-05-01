@@ -1,30 +1,111 @@
+
 {
-
-    "Platense" : "118772453",
-    "SanLorenzo" : "240008403",
-    "GodoyCruz" : "243401825",
-    "Arsenal" : "175738629",
-    "Estudiantes" : "284128412",
-    "Aldosivi" : "356227688",
-    "DefensayJusticia" : "345614692",
-    "Talleres" : "196845049",
-    "Racing" : "95227165",
-    "Independiente" : "188356649",
-    "Argentinos" : "161407339",
-    "CentralC\u00f3rdoba" : "2981271479",
-    "Patronato" : "1135417664",
-    "GimnasiaLP" : "118056286",
-    "RosarioCentral" : "338400297",
-    "Banfield" : "706027358",
-    "Uni\u00f3n" : "201032752",
-    "Boca" : "42933426",
-    "River" : "161734463",
-    "Col\u00f3n" : "505347396",
-    "Hurac\u00e1n" : "274140988",
-    "Sarmiento" : "730533499",
-    "Lan\u00fas" : "783689678",
-    "Newell\u00b4s" : "575667065",
-    "Atl\u00e9ticoTucum\u00e1n" : "162918448",
-    "V\u00e9lez" : "276204298"
-
+	"Aldosivi": {
+		"account_id": "356227688",
+		"team_id": "135150"
+	},
+	"Argentinos": {
+		"account_id": "161407339",
+		"team_id": "135151"
+	},
+	"Arsenal": {
+		"account_id": "175738629",
+		"team_id": "135152"
+	},
+	"Atl\u00e9ticoTucum\u00e1n": {
+		"account_id": "162918448",
+		"team_id": "135681"
+	},
+	"Banfield": {
+		"account_id": "706027358",
+		"team_id": "135154"
+	},
+	"Boca": {
+		"account_id": "42933426",
+		"team_id": "135156"
+	},
+	"CentralC\u00f3rdoba": {
+		"account_id": "2981271479",
+		"team_id": "137603"
+	},
+	"Col\u00f3n": {
+		"account_id": "505347396",
+		"team_id": "135157"
+	},
+	"DefensayJusticia": {
+		"account_id": "345614692",
+		"team_id": "135159"
+	},
+	"Estudiantes": {
+		"account_id": "284128412",
+		"team_id": "135160"
+	},
+	"GimnasiaLP": {
+		"account_id": "118056286",
+		"team_id": "135161"
+	},
+	"GodoyCruz": {
+		"account_id": "243401825",
+		"team_id": "135162"
+	},
+	"Hurac\u00e1n": {
+		"account_id": "274140988",
+		"team_id": "135163"
+	},
+	"Independiente": {
+		"account_id": "188356649",
+		"team_id": "135164"
+	},
+	"Lan\u00fas": {
+		"account_id": "783689678",
+		"team_id": "135165"
+	},
+	"Newell's": {
+		"account_id": "575667065",
+		"team_id": "135166"
+	},
+	"Newell\u00b4s": {
+		"account_id": "575667065",
+		"team_id": "135166"
+	},
+	"Patronato": {
+		"account_id": "1135417664",
+		"team_id": "135682"
+	},
+	"Platense": {
+		"account_id": "118772453",
+		"team_id": "137775"
+	},
+	"Racing": {
+		"account_id": "95227165",
+		"team_id": "135170"
+	},
+	"River": {
+		"account_id": "161734463",
+		"team_id": "135171"
+	},
+	"RosarioCentral": {
+		"account_id": "338400297",
+		"team_id": "135172"
+	},
+	"SanLorenzo": {
+		"account_id": "240008403",
+		"team_id": "135173"
+	},
+	"Sarmiento": {
+		"account_id": "730533499",
+		"team_id": "135175"
+	},
+	"Talleres": {
+		"account_id": "196845049",
+		"team_id": "136674"
+	},
+	"Uni\u00f3n": {
+		"account_id": "201032752",
+		"team_id": "135178"
+	},
+	"V\u00e9lez": {
+		"account_id": "276204298",
+		"team_id": "135179"
+	}
 }

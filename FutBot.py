@@ -18,6 +18,7 @@ ACCESS_KEY = environ['ACCESS_KEY']
 ACCESS_SECRET = environ['ACCESS_SECRET']
 
 API_MATCHES = environ['API_MATCHES']
+API_TEAMS = environ['API_TEAMS']
 
 #mananger user id
 MANANGER_USER_ID = environ['MANANGER_USER_ID']
@@ -37,6 +38,7 @@ class FutBot:
         print("\n\nSTARTING... - " + str(self.get_actual_datetime()))
 
         # tournaments info
+        self.api_sports = API_Sports(API_MATCHES, API_TEAMS)
         self.tour_ids = ['1276', '3']
         self.tournaments = []
 
@@ -90,12 +92,12 @@ class FutBot:
             if self.tournaments:
                 self.tournaments = []
             return
-        
+        if not self.api_sports.status:
+            self.api_sports = API_Sports(API_MATCHES, API_TEAMS)
         if not self.tournaments:
             print("--  updating TOURNAMENTS information --")
-            api_sports = API_Sports(API_MATCHES)
             for id in self.tour_ids:
-                res_tour = api_sports.get_by_id(id)
+                res_tour = self.api_sports.get_by_id(id)
                 if res_tour:
                     self.tournaments.append(res_tour)
             self.last_update_request = self.get_actual_datetime()
@@ -120,20 +122,26 @@ class FutBot:
                             break
                         try:
                             match_text = match.print_match()
-                            match_text += self.get_screen_names([x.replace(" ", "") for x in match.get_equipos()])
+                            json_keys = [x.replace(" ", "") for x in match.get_equipos()]
+                            match_text += self.get_screen_names(json_keys)
+                            
+                            img = self.api_sports.get_img_by_ids(self.get_team_ids(json_keys))
 
-                            self.tweet_status(match_text)
+                            self.tweet_status(match_text, img)
                             print("Publicando partido -- " + match.equipo1 + "|" + match.equipo2)
                         except Exception as e:
                             print("ERROR: update_tournaments()-(2) e=", e)
 
                         tour.matches.remove(match)
 
-    def tweet_status(self, new_status):
+    def tweet_status(self, new_status, img_path = None):
         ''' Sends new status with the text given by parameter '''
 
         try:
-            self.api_connection.update_status(status = new_status)
+            if img_path:
+                self.api_connection.update_with_media(status = new_status, filename = img_path)
+            else:
+                self.api_connection.update_status(status = new_status)
         except Exception as exception:
             raise Exception('Duplicated tweet') from exception
     
@@ -155,10 +163,25 @@ class FutBot:
                 data = json.load(json_file)
                 for key in keys_list:
                     if key in data.keys():
-                        res += '@' + self.api_connection.get_user(data[key]).screen_name + ' '
+                        res += '@' + self.api_connection.get_user(data[key]['account_id']).screen_name + ' '
         except Exception as exception:
             print("ERROR: get_screen_names() - e=" + exception)
             res = ""
+        return res
+    
+    def get_team_ids(self, keys_list):
+        ''' Retuns string containing sreen_names for each key in list given by parameter '''
+
+        res = []
+        try:
+            with open("./clubsid.json") as json_file:
+                data = json.load(json_file)
+                for key in keys_list:
+                    if key in data.keys():
+                        res.append(data[key]['team_id'])
+        except Exception as exception:
+            print("ERROR: get_screen_names() - e=" + exception)
+            res = []
         return res
 
     def get_actual_datetime(self):
