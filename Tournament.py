@@ -32,12 +32,12 @@ class Tournament():
 
         for m in self.matches:
             m_txt = m.print_basic_info()
-            if len(tt[index] + m_txt) > 279:
+            if len(tt[index] + m_txt) > 250:
                 tt.append(m_txt)
                 index += 1
             else:
                 tt[index] += m_txt
         
-        if len(tt[index] + hashtag) < 279:
+        if len(tt[index] + hashtag) < 250:
             tt[index] += hashtag
         return tt
