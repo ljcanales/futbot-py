@@ -91,6 +91,7 @@ class FutBot:
         if self.get_actual_datetime().hour < 9:
             if self.tournaments:
                 self.tournaments = []
+                self.api_sports = None
             return
         if not self.api_sports.status:
             self.api_sports = API_Sports(API_MATCHES, API_TEAMS)
