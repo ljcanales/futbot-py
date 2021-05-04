@@ -17,17 +17,17 @@ class Match():
         if self.tournament.id in self.tournament.HASTAGS_BY_ID.keys():
             hashtag = " ".join(self.tournament.HASTAGS_BY_ID[self.tournament.id])
 
-        tt += '⚽ ' + self.equipo1.upper() + ' vs ' + self.equipo2.upper() + '\n\n'
-        tt += '🗓️ ' + self.tournament.date + ' ⏰' + self.time + '\n'
-        tt += '🏆 ' + self.tournament.name + '\n'
+        tt += '⚽ {} vs {}\n\n'.format(self.equipo1.upper(), self.equipo2.upper())
+        tt += '🗓️ {} {} ⏰ {}\n'.format(self.tournament.day_name, self.tournament.date.replace('-','/'), self.time)
+        tt += '🏆 {}\n'.format(self.tournament.name)
         if self.tv:
-            tt += '📺 ' + " - ".join(self.tv) + '\n'
+            tt += '📺 {}\n'.format(" - ".join(self.tv))
         
-        tt += '\n#' + self.equipo1.replace(" ", "") + ' #' + self.equipo2.replace(" ", "") + ' ' + hashtag + '\n'
+        tt += '\n#{} #{} {}\n'.format(self.equipo1.replace(" ", ""), self.equipo2.replace(" ", ""), hashtag)
 
         return tt
 
     def print_basic_info(self):
         tt = ""
-        tt += '⌚' + self.time + ' - ' + self.equipo1 + ' vs ' + self.equipo2 + '\n'
+        tt += '⌚{} - {} vs {}\n'.format(self.time, self.equipo1, self.equipo2)
         return tt
