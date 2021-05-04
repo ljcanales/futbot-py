@@ -47,6 +47,8 @@ class API_Sports():
     
     def get_img_by_ids(self, ids):
         try:
+            if not ids[0] or not ids[1] or not type(ids[0])==str or not type(ids[1])==str:
+                raise Exception("IDs not specified or not str type")
             id1 = ids[0]
             id2 = ids[1]
             team1_info = requests.get(self.url_teams + id1).json()
