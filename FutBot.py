@@ -97,7 +97,7 @@ class FutBot:
                 self.tournaments = []
                 self.api_sports = None
             return
-        if not self.api_sports.status:
+        if not self.api_sports or not self.api_sports.status:
             self.api_sports = API_Sports(API_MATCHES, API_TEAMS)
         if not self.tournaments:
             print("--  updating TOURNAMENTS information --")
