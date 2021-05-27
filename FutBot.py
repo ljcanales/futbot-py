@@ -62,32 +62,11 @@ class FutBot:
     def update_bot(self):
         ''' Handle bot update functions '''
 
-        self.direct_message()
-
         self.update_tournaments()
 
         self.check_mentions()
 
         print("- Update Flag")
-
-    def direct_message(self):
-        ''' Handle direct messages '''
-
-        new_id = self.since_id_dm
-
-        for msg in self.api_connection.list_direct_messages(5):
-            if int(msg.id) == self.since_id_dm:
-                break
-            elif self.since_id_dm == 1: #if it is the first time since last execution
-                new_id = int(msg.id)
-                break
-            new_id = max(int(msg.id), new_id)
-
-            if msg.message_create['sender_id'] == MANANGER_USER_ID:
-                self.tweet_status(msg.message_create['message_data']['text'])
-                print("tweeting -> ", msg.message_create['message_data']['text'])
-
-        self.since_id_dm = new_id
     
     def update_tournaments(self):
         ''' Handle tournaments information '''
