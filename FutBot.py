@@ -210,7 +210,7 @@ class FutBot:
             with open("./clubsid.json") as json_file:
                 data = json.load(json_file)
                 for key in keys_list:
-                    if key in data.keys():
+                    if key in data.keys() and data[key]['account_id']:
                         res += '@' + self.api_connection.get_user(data[key]['account_id']).screen_name + ' '
         except Exception as exception:
             print("ERROR: get_screen_names() - e=" + exception)
@@ -225,7 +225,7 @@ class FutBot:
             with open("./clubsid.json") as json_file:
                 data = json.load(json_file)
                 for key in keys_list:
-                    if key in data.keys():
+                    if key in data.keys() and data[key]['team_id']:
                         res.append(data[key]['team_id'])
         except Exception as exception:
             print("ERROR: get_screen_names() - e=" + exception)

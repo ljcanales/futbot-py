@@ -107,5 +107,55 @@
 	"V\u00e9lez": {
 		"account_id": "276204298",
 		"team_id": "135179"
+	},
+
+
+	"Argentina": {
+		"account_id": "2495199115",
+		"team_id": "134509"
+	},
+	"Australia": {
+		"account_id": null,
+		"team_id": "134500"
+	},
+	"Bolivia": {
+		"account_id": "1083354987093245953",
+		"team_id": "136470"
+	},
+	"Brasil": {
+		"account_id": null,
+		"team_id": "134496"
+	},
+	"Chile": {
+		"account_id": "2842600971",
+		"team_id": "134499"
+	},
+	"Colombia": {
+		"account_id": "1117317140",
+		"team_id": "134501"
+	},
+	"Ecuador": {
+		"account_id": "2409683900",
+		"team_id": "134507"
+	},
+	"Paraguay": {
+		"account_id": null,
+		"team_id": "136471"
+	},
+	"Peru": {
+		"account_id": "319735479",
+		"team_id": "136162"
+	},
+	"Qatar": {
+		"account_id": null,
+		"team_id": "136472"
+	},
+	"Uruguay": {
+		"account_id": "347349823",
+		"team_id": "134504"
+	},
+	"Venezuela": {
+		"account_id": "360671330",
+		"team_id": "136473"
 	}
 }
