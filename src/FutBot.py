@@ -7,9 +7,9 @@ from tweepy import OAuthHandler
 import tweepy
 
 # TOURNAMENTS CONTROL MODULES
-from Match import Match
-from Tournament import Tournament
-from API_Sports import API_Sports
+from src.Match import Match
+from src.Tournament import Tournament
+from src.API_Sports import API_Sports
 
 #load keys
 API_KEY = environ['API_KEY']

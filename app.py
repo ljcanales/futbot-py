@@ -1,4 +1,4 @@
-import FutBot
+from src import FutBot
 import time
 
 def main():
