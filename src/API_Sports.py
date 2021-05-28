@@ -1,8 +1,8 @@
 ''' API_Sports Module '''
 
 import requests
-from src.Tournament import Tournament
-from src.Match import Match
+from src.model.Tournament import Tournament
+from src.model.Match import Match
 
 import re
 from PIL import Image
