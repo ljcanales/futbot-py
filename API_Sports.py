@@ -78,7 +78,9 @@ class API_Sports():
 
                 width_final = int((image1.width + image2.width) * 1.40)
                 height_final = int(image1.height * 1.60)
-                final_img = Image.new('RGB', (width_final, height_final), (68, 73, 73))
+                #final_img = Image.new('RGB', (width_final, height_final), (3, 64, 97))
+                final_img = Image.open('./outputs/default_bg.jpg')
+                #final_img = final_img.resize((width_final, height_final))
 
                 final_img.paste(image1, (int((width_final / 2 - image1.width) / 3), int((height_final - image1.height)/2)), image1)
                 final_img.paste(image2, (int((width_final / 2 + (width_final / 2 - image2.width) * 2 / 3)), int((height_final - image1.height)/2)), image2)
