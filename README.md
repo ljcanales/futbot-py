@@ -1,6 +1,13 @@
 # FutBot
 
-Bot que publica en **Twitter** los partidos del día de los torneos especificados. Y recuerda antes de cada uno de ellos.
+Bot que publica en **Twitter** los partidos del día correspondientes a los torneos especificados. Además, recuerda antes de cada uno de ellos.
+
+Dependencias:
+
+- [Tweepy](https://www.tweepy.org/) (para conectarse a [TwitterAPI](https://developer.twitter.com/en/docs/twitter-api))
+- [Requests](https://docs.python-requests.org/)
+- [Pillow](https://pillow.readthedocs.io/)
+- [...](https://github.com/ljcanales/FutBot/blob/master/requirements.txt)
 
 
 ### Twitter Account
