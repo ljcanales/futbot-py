@@ -3,6 +3,7 @@
 from os import environ
 import datetime
 import json
+import re
 from tweepy import OAuthHandler
 import tweepy
 
@@ -141,7 +142,15 @@ class FutBot:
                         print("TEXT: " + tweet.text)
                         print("ANSWER: " + presentation)
                         print("---------------------------------")
-                        self.tweet_status(new_status = presentation, reply_to = tweet.id)
+                        ## BANNER MAKER V1.1
+                        check_vs = split_users_vs(tweet.text)
+                        if check_vs:
+                            users_img_urls = [self.get_user_photo(u) for u in check_vs]
+                            img = self.api_sports.get_banner_by_urls(users_img_urls)
+                            if img:
+                                self.tweet_status(new_status = '', img_path = img, reply_to = tweet.id)
+                        else:
+                            self.tweet_status(new_status = presentation, reply_to = tweet.id)
                     else:
                         my_tweet = self.api_connection.get_status(tweet.in_reply_to_status_id_str)
                         # if ERROR tweet deleted
@@ -167,7 +176,15 @@ class FutBot:
                             print("TEXT: " + tweet.text)
                             print("ANSWER: " + txt)
                             print("---------------------------------")
-                            self.tweet_status(new_status = txt, reply_to = tweet.id)
+                            ## BANNER MAKER V1.1
+                            check_vs = split_users_vs(tweet.text)
+                            if check_vs:
+                                users_img_urls = [self.get_user_photo(u) for u in check_vs]
+                                img = self.api_sports.get_banner_by_urls(users_img_urls)
+                                if img:
+                                    self.tweet_status(new_status = '', img_path = img, reply_to = tweet.id)
+                            else:
+                                self.tweet_status(new_status = txt, reply_to = tweet.id)
                 elif self.my_user_id in [x['id'] for x in tweet.entities['user_mentions']]:
                     # si menciona de onda en respuesta a otro
                     # presentarse
@@ -176,7 +193,15 @@ class FutBot:
                     print("TEXT: " + tweet.text)
                     print("ANSWER: " + presentation)
                     print("---------------------------------")
-                    self.tweet_status(new_status = presentation, reply_to = tweet.id)
+                    ## BANNER MAKER V1.1
+                    check_vs = split_users_vs(tweet.text)
+                    if check_vs:
+                        users_img_urls = [self.get_user_photo(u) for u in check_vs]
+                        img = self.api_sports.get_banner_by_urls(users_img_urls)
+                        if img:
+                            self.tweet_status(new_status = '', img_path = img, reply_to = tweet.id)
+                    else:
+                        self.tweet_status(new_status = presentation, reply_to = tweet.id)
             except Exception as e:
                 print(str(e))
                 continue
@@ -242,8 +267,23 @@ class FutBot:
             raise Exception("ERROR: get_last_datetime() - e=" + str(exception)) from exception
 
         return None
+    
+    def get_user_photo(self, user):
+        try:
+            return self.api_connection.get_user(user.replace('@','')).profile_image_url_https.replace('_normal','')
+        except:
+            return None
 
 def get_actual_datetime():
-        ''' Returns actual datetime by TIME_ZONE '''
+    ''' Returns actual datetime by TIME_ZONE '''
 
-        return datetime.datetime.now().astimezone(TIME_ZONE)
+    return datetime.datetime.now().astimezone(TIME_ZONE)
+
+def split_users_vs(msg):
+    result = re.findall("@\w*\s+vs.?\s+@\w*", msg)
+    users = []
+    
+    if result:
+        users = re.split("\s+vs.?\s+" , result[0])
+    
+    return users

@@ -5,7 +5,7 @@ from src.model.Tournament import Tournament
 from src.model.Match import Match
 
 import re
-from PIL import Image
+from PIL import Image, ImageDraw
 class API_Sports():
     def __init__(self, api_url, url_teams):
         self.url_teams = url_teams
@@ -96,7 +96,7 @@ class API_Sports():
 
         return None
 
-    def make_match_img(self, urls_lst):
+    def get_banner_by_urls(self, urls_lst):
         ''' Make match image from image urls given by parameter '''
 
         try:
@@ -115,24 +115,29 @@ class API_Sports():
             image1 = Image.open('./outputs/img_1.png')
             image2 = Image.open('./outputs/img_2.png')
             middle_image = Image.open('./outputs/middle_img.png')
-
-            width_final = int((image1.width + image2.width) * 1.40)
-            height_final = int(image1.height * 1.60)
-            final_img = Image.new('RGB', (width_final, height_final), (68, 73, 73))
-
-            final_img.paste(image1, (int((width_final / 2 - image1.width) / 3), int((height_final - image1.height)/2)))
-            final_img.paste(image2, (int((width_final / 2 + (width_final / 2 - image2.width) * 2 / 3)), int((height_final - image1.height)/2)))
-
-            if final_img.height < middle_image.height:
-                middle_image = middle_image.resize((int(middle_image.width * final_img.height  / final_img.height), final_img.height))
+            final_img = Image.open('./outputs/default_bg.jpg')
+            size = (400, 400)
+            # Scale the images to be the size of the circle
+            image1 = image1.resize(size, Image.ANTIALIAS)
+            image2 = image2.resize(size, Image.ANTIALIAS)
+            # Create the circle mask
+            mask = Image.new('L', image1.size)
+            draw = ImageDraw.Draw(mask)
+            draw.ellipse((0, 0) + image1.size, fill=255)
+            
+            # Prepare final_img and paste
+            width_final = final_img.width
+            height_final = final_img.height
+            final_img.paste(image1, (int((width_final / 2 - image1.width) / 3), int((height_final - image1.height)/2)), mask)
+            final_img.paste(image2, (int((width_final / 2 + (width_final / 2 - image2.width) * 2 / 3)), int((height_final - image1.height)/2)), mask)
             final_img.paste(middle_image, (int((width_final - middle_image.width) / 2), int((height_final - middle_image.height) / 2)), middle_image)
 
-            img_path = './outputs/img_final.jpg'
+            img_path = './outputs/img_users_final.jpg'
             final_img.save(img_path)
 
             return img_path
             
         except Exception as e:
-            print("ERROR: MAKE_MATCH_IMG()"+str(e))
+            print("ERROR: get_banner_by_urls() "+str(e))
         
         return None
