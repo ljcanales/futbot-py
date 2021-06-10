@@ -6,6 +6,7 @@ import json
 import re
 from tweepy import OAuthHandler
 import tweepy
+from instagrapi import Client
 
 # TOURNAMENTS CONTROL MODULES
 from src.model.Match import Match
@@ -17,6 +18,8 @@ API_KEY = environ['API_KEY']
 API_SECRET = environ['API_SECRET']
 ACCESS_KEY = environ['ACCESS_KEY']
 ACCESS_SECRET = environ['ACCESS_SECRET']
+UN_IG = environ['UN_IG']
+P_IG = environ['P_IG']
 
 API_MATCHES = environ['API_MATCHES']
 API_TEAMS = environ['API_TEAMS']
@@ -38,11 +41,13 @@ class FutBot:
         self.since_id_dm = 1
         self.last_mention_id = 1
         self.last_update_request = datetime.datetime(2018,12,9,17,00).astimezone(TIME_ZONE)
+        self.insta_cli = Client()
+        print(self.insta_cli.login(UN_IG, P_IG))
         print("\n\nSTARTING... - " + str(get_actual_datetime()))
 
         # tournaments info
         self.api_sports = API_Sports(API_MATCHES, API_TEAMS)
-        self.tour_ids = ['1276', '3']
+        self.tour_ids = ['1276', '3', '1324']
         self.tournaments = []
 
     def create_api(self):
@@ -113,7 +118,11 @@ class FutBot:
                             img = self.api_sports.get_img_by_ids(self.get_team_ids(json_keys))
 
                             self.tweet_status(match_text, img)
-                            print("Publicando partido -- " + match.equipo1 + "|" + match.equipo2)
+                            print("(TWITTER)Publicando partido -- " + match.equipo1 + "|" + match.equipo2)
+                            if img:
+                                story_img = self.api_sports.get_vertical_img_by_ids(match)
+                                self.post_story(story_img)
+                                print("(INSTAGRAM)Publicando partido -- " + match.equipo1 + "|" + match.equipo2)
                         except Exception as e:
                             print("ERROR: update_tournaments()-(2) e=", e)
 
@@ -273,6 +282,13 @@ class FutBot:
             return self.api_connection.get_user(user.replace('@','')).profile_image_url_https.replace('_normal','')
         except:
             return None
+
+    def post_story(self, path):
+        try:
+            if path:
+                self.insta_cli.photo_upload_to_story(path, 'From FutBot')
+        except Exception as exception:
+            raise Exception(str(exception)) from exception
 
 def get_actual_datetime():
     ''' Returns actual datetime by TIME_ZONE '''
