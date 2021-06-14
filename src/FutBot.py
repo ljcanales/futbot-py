@@ -1,12 +1,14 @@
 ''' FutBot Module '''
 
-from os import environ
+import os
 import datetime
 import json
 import re
 from tweepy import OAuthHandler
 import tweepy
 from instagrapi import Client
+from src.util.files import read_json_file
+from src.util.files import write_json_file
 
 # TOURNAMENTS CONTROL MODULES
 from src.model.Match import Match
@@ -14,18 +16,16 @@ from src.model.Tournament import Tournament
 from src.API_Sports import API_Sports
 
 #load keys
-API_KEY = environ['API_KEY']
-API_SECRET = environ['API_SECRET']
-ACCESS_KEY = environ['ACCESS_KEY']
-ACCESS_SECRET = environ['ACCESS_SECRET']
-UN_IG = environ['UN_IG']
-P_IG = environ['P_IG']
+API_KEY = os.environ['API_KEY']
+API_SECRET = os.environ['API_SECRET']
+ACCESS_KEY = os.environ['ACCESS_KEY']
+ACCESS_SECRET = os.environ['ACCESS_SECRET']
+UN_IG = os.environ['UN_IG']
+P_IG = os.environ['P_IG']
 
-API_MATCHES = environ['API_MATCHES']
-API_TEAMS = environ['API_TEAMS']
-
-#mananger user id
-MANANGER_USER_ID = environ['MANANGER_USER_ID']
+API_MATCHES = os.environ['API_MATCHES']
+API_TEAMS = os.environ['API_TEAMS']
+IG_CREDENTIAL_PATH = 'ig_credential.json'
 
 #sleeping time
 SLEEP_TIME = 300
@@ -41,8 +41,7 @@ class FutBot:
         self.since_id_dm = 1
         self.last_mention_id = 1
         self.last_update_request = datetime.datetime(2018,12,9,17,00).astimezone(TIME_ZONE)
-        self.insta_cli = Client()
-        print(self.insta_cli.login(UN_IG, P_IG))
+        self.login_with_credentials()
         print("\n\nSTARTING... - " + str(get_actual_datetime()))
 
         # tournaments info
@@ -65,6 +64,15 @@ class FutBot:
             print("Error in FutBot.create_api()", exception)
             return None
 
+    def login_with_credentials(self):
+        self.insta_cl = None
+        if os.path.exists(IG_CREDENTIAL_PATH):
+            self.insta_cl = Client(read_json_file(IG_CREDENTIAL_PATH))
+        else:
+            self.insta_cl = Client()
+            self.insta_cl.login(UN_IG, P_IG)
+            write_json_file(self.insta_cl.get_settings(), IG_CREDENTIAL_PATH)
+
     def update_bot(self):
         ''' Handle bot update functions '''
 
@@ -81,9 +89,14 @@ class FutBot:
             if self.tournaments:
                 self.tournaments = []
                 self.api_sports = None
+            if self.insta_cli:
+                self.insta_cli.logout()
+                self.insta_cli = None
             return
         if not self.api_sports or not self.api_sports.status:
             self.api_sports = API_Sports(API_MATCHES, API_TEAMS)
+        if not self.insta_cli:
+            self.login_with_credentials()
         if not self.tournaments:
             print("--  updating TOURNAMENTS information --")
             for id in self.tour_ids:
@@ -129,7 +142,7 @@ class FutBot:
                         tour.matches.remove(match)
     
     def check_mentions(self):
-        presentation = "Hola 👋, mi nombre es FutBot🤖 y te recuerdo los partidos de la Liga Profesional de Fútbol Argentino ⚽🇦🇷 \n\nSeguime y activa las notificaciones🔔"
+        presentation = "Hola 👋, mi nombre es FutBot🤖 y te recuerdo los partidos \n\nSeguime y activa las notificaciones🔔"
         follow = " seguime y"
         notification = " activa las notificaciones🔔 para enterarte de cada partido ⚽"
         
