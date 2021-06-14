@@ -41,7 +41,7 @@ class FutBot:
         self.since_id_dm = 1
         self.last_mention_id = 1
         self.last_update_request = datetime.datetime(2018,12,9,17,00).astimezone(TIME_ZONE)
-        self.login_with_credentials()
+        self.insta_cl = None
         print("\n\nSTARTING... - " + str(get_actual_datetime()))
 
         # tournaments info
@@ -89,13 +89,13 @@ class FutBot:
             if self.tournaments:
                 self.tournaments = []
                 self.api_sports = None
-            if self.insta_cli:
-                self.insta_cli.logout()
-                self.insta_cli = None
+            if self.insta_cl:
+                self.insta_cl.logout()
+                self.insta_cl = None
             return
         if not self.api_sports or not self.api_sports.status:
             self.api_sports = API_Sports(API_MATCHES, API_TEAMS)
-        if not self.insta_cli:
+        if not self.insta_cl:
             self.login_with_credentials()
         if not self.tournaments:
             print("--  updating TOURNAMENTS information --")
@@ -299,7 +299,7 @@ class FutBot:
     def post_story(self, path):
         try:
             if path:
-                self.insta_cli.photo_upload_to_story(path, 'From FutBot')
+                self.insta_cl.photo_upload_to_story(path, 'From FutBot')
         except Exception as exception:
             raise Exception(str(exception)) from exception
 
