@@ -1,3 +1,4 @@
+![Twitter Follow](https://img.shields.io/twitter/follow/FutBot_?style=social)
 # FutBot
 
 Bot que publica en **Twitter** los partidos del día correspondientes a los torneos especificados. Además, recuerda antes de cada uno de ellos.
