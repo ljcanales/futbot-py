@@ -67,11 +67,14 @@ class FutBot:
     def login_with_credentials(self):
         self.insta_cl = None
         if os.path.exists(IG_CREDENTIAL_PATH):
-            self.insta_cl = Client(read_json_file(IG_CREDENTIAL_PATH))
+            self.insta_cl = Client()
+            self.insta_cl.load_settings(IG_CREDENTIAL_PATH)
+            self.insta_cl.login(UN_IG, P_IG)
         else:
             self.insta_cl = Client()
             self.insta_cl.login(UN_IG, P_IG)
-            write_json_file(self.insta_cl.get_settings(), IG_CREDENTIAL_PATH)
+            self.insta_cl.dump_settings(IG_CREDENTIAL_PATH)
+        print('Log in [IG]')
 
     def update_bot(self):
         ''' Handle bot update functions '''
