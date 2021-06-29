@@ -7,6 +7,7 @@ class Match():
         self.equipo1 = equipo1
         self.equipo2 = equipo2
         self.tv = tv
+        self.tweet_id = ""
     
     def get_equipos(self):
         return [self.equipo1, self.equipo2]
@@ -30,4 +31,11 @@ class Match():
     def print_basic_info(self):
         tt = ""
         tt += '⌚{} - {} vs {}\n'.format(self.time, self.equipo1, self.equipo2)
+        return tt
+    
+    def print_message_info(self):
+        tt = ""
+        tt += '⚽ Está por empezar ⚽\n\n{} vs {}'.format(self.equipo1.upper(), self.equipo2.upper())
+        tt += '\n\n⏰ {}'.format(self.time)
+        tt += '\n\n Con un RT y MG me ayudas mucho!'
         return tt

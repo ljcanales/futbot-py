@@ -118,6 +118,7 @@ class FutBot:
 
         else:
             alert_time =  get_actual_datetime() + datetime.timedelta(hours = 1)
+            matches_tweeted = []
             for tour in self.tournaments:
                 if tour and tour.matches:
                     for match in tour.matches[:]:
@@ -133,7 +134,9 @@ class FutBot:
                             
                             img = self.api_sports.get_img_by_ids(self.get_team_ids(json_keys))
 
-                            self.tweet_status(match_text, img)
+                            status_id = self.tweet_status(match_text, img)
+                            match.tweet_id = status_id
+                            matches_tweeted.append(match)
                             print("(TWITTER)Publicando partido -- " + match.equipo1 + "|" + match.equipo2)
                             if img:
                                 story_img = self.api_sports.get_vertical_img_by_ids(match)
@@ -143,6 +146,8 @@ class FutBot:
                             print("ERROR: update_tournaments()-(2) e=", e)
 
                         tour.matches.remove(match)
+            if matches_tweeted:
+                self.send_match_messages(matches_tweeted)
     
     def check_mentions(self):
         presentation = "Hola 👋, mi nombre es FutBot🤖 y te recuerdo los partidos \n\nSeguime y activa las notificaciones🔔"
@@ -233,13 +238,13 @@ class FutBot:
         self.last_mention_id = new_id
 
     def tweet_status(self, new_status, img_path = None, reply_to = None):
-        ''' Sends new status with the text given by parameter '''
+        ''' Sends new status with the text given by parameter. Return status id_str '''
 
         try:
             if img_path:
-                self.api_connection.update_with_media(status = new_status, filename = img_path, in_reply_to_status_id = reply_to, auto_populate_reply_metadata = True)
+                return self.api_connection.update_with_media(status = new_status, filename = img_path, in_reply_to_status_id = reply_to, auto_populate_reply_metadata = True).id_str
             else:
-                self.api_connection.update_status(status = new_status, in_reply_to_status_id = reply_to, auto_populate_reply_metadata = True)
+                return self.api_connection.update_status(status = new_status, in_reply_to_status_id = reply_to, auto_populate_reply_metadata = True).id_str
         except Exception as exception:
             raise Exception(str(exception)) from exception
     
@@ -251,6 +256,19 @@ class FutBot:
                 reply_id = self.api_connection.update_status(status = status, in_reply_to_status_id = reply_id, auto_populate_reply_metadata = True).id_str
         except Exception as exception:
             raise Exception(str(exception)) from exception
+    
+    def send_match_messages(self, matches):
+        ''' Sends match info to every follower '''
+        
+        for follower in tweepy.Cursor(self.api_connection.followers,'FutBot_').items():
+            for match in matches:
+                try:
+                    text = match.print_message_info()
+                    if match.tweet_id:
+                        text += '\nhttps://twitter.com/FutBot_/status/{}'.format(str(match.tweet_id))
+                    self.api_connection.send_direct_message(follower.id_str)
+                except:
+                    pass
 
     def get_screen_names(self, keys_list):
         ''' Retuns string containing sreen_names for each key in list given by parameter '''
