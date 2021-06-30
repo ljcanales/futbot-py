@@ -127,6 +127,7 @@ class FutBot:
                         
                         if match_time > alert_time:
                             break
+                        tour.matches.remove(match)
                         try:
                             match_text = match.print_match()
                             json_keys = [x.replace(" ", "") for x in match.get_equipos()]
@@ -145,7 +146,6 @@ class FutBot:
                         except Exception as e:
                             print("ERROR: update_tournaments()-(2) e=", e)
 
-                        tour.matches.remove(match)
             if matches_tweeted:
                 self.send_match_messages(matches_tweeted)
     
