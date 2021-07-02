@@ -9,6 +9,7 @@ def read_json_file(path_file, object_hook=None):
     """
     with open(path_file, 'r', encoding='utf8') as json_file:
         return json.load(json_file, object_hook=object_hook)
+    return None
 
 def write_json_file(data, path_file, default=None):
     """

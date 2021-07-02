@@ -4,11 +4,11 @@ import os
 import datetime
 import json
 import re
+from time import sleep
 from tweepy import OAuthHandler
 import tweepy
 from instagrapi import Client
-from src.util.files import read_json_file
-from src.util.files import write_json_file
+import src.util.files as fs
 
 # TOURNAMENTS CONTROL MODULES
 from src.model.Match import Match
@@ -27,6 +27,9 @@ API_MATCHES = os.environ['API_MATCHES']
 API_TEAMS = os.environ['API_TEAMS']
 IG_CREDENTIAL_PATH = 'ig_credential.json'
 
+# CONFIG FILE
+CONFIG_PATH='./config_file.json'
+
 #sleeping time
 SLEEP_TIME = 300
 
@@ -36,6 +39,7 @@ class FutBot:
     ''' FutBot class - manage bot behavior '''
 
     def __init__(self):
+        self.config = fs.read_json_file(CONFIG_PATH)
         self.api_connection = self.create_api()
         self.my_user_id = self.api_connection.me().id
         self.since_id_dm = 1
@@ -79,11 +83,14 @@ class FutBot:
     def update_bot(self):
         ''' Handle bot update functions '''
 
+        if self.config and self.config['update_config']:
+            self.config = fs.read_json_file(CONFIG_PATH)
+
         self.update_tournaments()
 
         self.check_mentions()
 
-        print("- Update Flag")
+        print("- Update Flag at {}".format(str(get_actual_datetime())))
     
     def update_tournaments(self):
         ''' Handle tournaments information '''
@@ -134,19 +141,20 @@ class FutBot:
                             match_text += self.get_screen_names(json_keys)
                             
                             img = self.api_sports.get_img_by_ids(self.get_team_ids(json_keys))
-
-                            status_id = self.tweet_status(match_text, img)
-                            match.tweet_id = status_id
+                            
+                            if self.config and self.config['tweet_match']:
+                                status_id = self.tweet_status(match_text, img)
+                                match.tweet_id = status_id
+                                print("(TWITTER)Publicando partido -- " + match.equipo1 + "|" + match.equipo2)
                             matches_tweeted.append(match)
-                            print("(TWITTER)Publicando partido -- " + match.equipo1 + "|" + match.equipo2)
-                            if img:
+                            if img and self.config and self.config['post_story_match']:
                                 story_img = self.api_sports.get_vertical_img_by_ids(match)
                                 self.post_story(story_img)
                                 print("(INSTAGRAM)Publicando partido -- " + match.equipo1 + "|" + match.equipo2)
                         except Exception as e:
                             print("ERROR: update_tournaments()-(2) e=", e)
 
-            if matches_tweeted:
+            if matches_tweeted and self.config and self.config['send_match_message']:
                 self.send_match_messages(matches_tweeted)
     
     def check_mentions(self):
@@ -259,16 +267,18 @@ class FutBot:
     
     def send_match_messages(self, matches):
         ''' Sends match info to every follower '''
-        
+
         for follower in tweepy.Cursor(self.api_connection.followers,'FutBot_').items():
             for match in matches:
                 try:
-                    text = match.print_message_info()
+                    text = 'Hola @{}\n\n'.format(follower.screen_name)
+                    text += match.print_message_info()
                     if match.tweet_id:
                         text += '\nhttps://twitter.com/FutBot_/status/{}'.format(str(match.tweet_id))
-                    self.api_connection.send_direct_message(follower.id_str)
-                except:
-                    pass
+                    self.api_connection.send_direct_message(follower.id_str, text)
+                except Exception as exception:
+                    print("ERROR: send_match_messages() - e=" + str(exception))
+                    sleep(5)
 
     def get_screen_names(self, keys_list):
         ''' Retuns string containing sreen_names for each key in list given by parameter '''
@@ -281,7 +291,7 @@ class FutBot:
                     if key in data.keys() and data[key]['account_id']:
                         res += '@' + self.api_connection.get_user(data[key]['account_id']).screen_name + ' '
         except Exception as exception:
-            print("ERROR: get_screen_names() - e=" + exception)
+            print("ERROR: get_screen_names() - e=" + str(exception))
             res = ""
         return res
     
@@ -296,7 +306,7 @@ class FutBot:
                     if key in data.keys() and data[key]['team_id']:
                         res.append(data[key]['team_id'])
         except Exception as exception:
-            print("ERROR: get_screen_names() - e=" + exception)
+            print("ERROR: get_screen_names() - e=" + str(exception))
             res = []
         return res
 
