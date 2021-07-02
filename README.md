@@ -1,33 +1,31 @@
 [![Twitter Follow](https://img.shields.io/twitter/follow/FutBot_?style=social)](https://twitter.com/FutBot_)
 # FutBot
 
-Bot que publica en **Twitter** los partidos del día correspondientes a los torneos especificados. Además, recuerda antes de cada uno de ellos.
+Bot que publica los partidos del día. Además, recuerda antes de cada uno de ellos.
 
-> Dependencias:
-> 
-> - [Tweepy](https://www.tweepy.org/) (para conectarse a [TwitterAPI](https://developer.twitter.com/en/docs/twitter-api))
-> - [Requests](https://docs.python-requests.org/)
-> - [Pillow](https://pillow.readthedocs.io/)
-> - [...](https://github.com/ljcanales/FutBot/blob/master/requirements.txt)
+**TWITTER**
+- Publica tweet con los partidos del dia (un tweet por torneo).
+- Publica tweet con imagen por partido (antes de cada partido).
+- Envia mensaje directo como recordatorio a los seguidores (adjuntando url al tweet).
 
+**INSTAGRAM**
+- Publica story con imagen por partido (antes de cada partido).
 
-### Twitter Account
+# Configuracion
+Editar el archivo `config_file.json` con los valores deseados (true/false):
 
-Follow [@FutBot_](https://twitter.com/FutBot_)
-
-### Sequence Diagram
-
-```mermaid
-	sequenceDiagram;
-		participant F as FutBot;
-		participant A as API_Sports;
-		participant T as TwitterAPI;
-		F->>+ A: getTournament();
-		A-->>-F: Tournament;
-		F->> T: publish(Tournament);
-
-		F->> T: publish(Match);
-
-		Note over F,T: Si falta menos de una hora;
 ```
+{
+ "send_match_message": true,
+ "tweet_match" : true,
+ "post_story_match" : true,
+ "update_config" : true
+}
+```
+
+# Cuentas
+
+- Twitter: [@FutBot_](https://twitter.com/FutBot_)
+- Instagram: [@futbot__](https://www.instagram.com/futbot__/)
+
 
