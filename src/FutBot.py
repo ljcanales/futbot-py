@@ -4,7 +4,6 @@ import os
 import datetime
 import json
 import re
-from time import sleep
 from tweepy import OAuthHandler
 import tweepy
 from instagrapi import Client
@@ -29,6 +28,9 @@ IG_CREDENTIAL_PATH = 'ig_credential.json'
 
 # CONFIG FILE
 CONFIG_PATH='./config_file.json'
+
+# TEMPLATES FILE
+TEXT_TEMPLATES_PATH = "./text_templates.json"
 
 #sleeping time
 SLEEP_TIME = 300
@@ -268,17 +270,28 @@ class FutBot:
     def send_match_messages(self, matches):
         ''' Sends match info to every follower '''
 
+        templates = fs.read_json_file(TEXT_TEMPLATES_PATH)
+        cant_templates = 0
+
+        if templates and len(templates['match_message']) > 0:
+            templates = templates['match_message']
+            cant_templates = len(templates)
+        else:
+            print('Message templates not found, check text_templates.json file')
+            return
+        
+        i = 0
         for follower in tweepy.Cursor(self.api_connection.followers,'FutBot_').items():
             for match in matches:
                 try:
                     text = 'Hola @{}\n\n'.format(follower.screen_name)
-                    text += match.print_message_info()
+                    text += match.message_by_template(templates[i % cant_templates])
                     if match.tweet_id:
                         text += '\nhttps://twitter.com/FutBot_/status/{}'.format(str(match.tweet_id))
                     self.api_connection.send_direct_message(follower.id_str, text)
+                    i += 1
                 except Exception as exception:
                     print("ERROR: send_match_messages() - e=" + str(exception))
-                    sleep(5)
 
     def get_screen_names(self, keys_list):
         ''' Retuns string containing sreen_names for each key in list given by parameter '''

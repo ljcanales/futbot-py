@@ -39,3 +39,6 @@ class Match():
         tt += '\n\n⏰ {}'.format(self.time)
         tt += '\n\n Con un RT y MG me ayudas mucho!'
         return tt
+    
+    def message_by_template(self, template):
+        return template.format(self.equipo1.upper(), self.equipo2.upper(), self.time)
