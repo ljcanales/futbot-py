@@ -8,6 +8,7 @@ from tweepy import OAuthHandler
 import tweepy
 from instagrapi import Client
 import src.util.files as fs
+import src.util.metrics as metrics
 
 # TOURNAMENTS CONTROL MODULES
 from src.model.Match import Match
@@ -117,13 +118,17 @@ class FutBot:
                     self.tournaments.append(res_tour)
             self.last_update_request = get_actual_datetime()
 
-            for tour in self.tournaments:
-                try:
-                    if tour and tour.matches and self.get_last_tweet_date() < get_actual_datetime().date():
-                        self.tweet_status_lst(tour.print_tournament())
-                        print("Publicando partidos del dia - " + tour.name)
-                except Exception as exception:
-                    print("ERROR: update_tournaments()-(1)", exception)
+            if self.get_last_tweet_date() < get_actual_datetime().date():
+                tours_tweeted = 0
+                for tour in self.tournaments:
+                    try:
+                        if tour and tour.matches:
+                            self.tweet_status_lst(tour.print_tournament())
+                            tours_tweeted += 1
+                            print("Publicando partidos del dia - " + tour.name)
+                    except Exception as exception:
+                        print("ERROR: update_tournaments()-(1)", exception)
+                metrics.increase_metric(metrics.TWEETED_DAY_MATCHES, tours_tweeted)
 
         else:
             alert_time =  get_actual_datetime() + datetime.timedelta(hours = 1)
@@ -156,8 +161,10 @@ class FutBot:
                         except Exception as e:
                             print("ERROR: update_tournaments()-(2) e=", e)
 
-            if matches_tweeted and self.config and self.config['send_match_message']:
-                self.send_match_messages(matches_tweeted)
+            if matches_tweeted:
+                metrics.increase_metric(metrics.TWEETED_MATCHES, len(matches_tweeted))
+                if self.config and self.config['send_match_message']:
+                    self.send_match_messages(matches_tweeted)
     
     def check_mentions(self):
         presentation = "Hola 👋, mi nombre es FutBot🤖 y te recuerdo los partidos \n\nSeguime y activa las notificaciones🔔"
@@ -280,18 +287,21 @@ class FutBot:
             print('Message templates not found, check text_templates.json file')
             return
         
-        i = 0
-        for follower in tweepy.Cursor(self.api_connection.followers,'FutBot_').items():
-            for match in matches:
-                try:
+        sent_messages = 0
+        
+        try:
+            for follower in tweepy.Cursor(self.api_connection.followers,'FutBot_').items():
+                for match in matches:
                     text = 'Hola @{}\n\n'.format(follower.screen_name)
-                    text += match.message_by_template(templates[i % cant_templates])
+                    text += match.message_by_template(templates[sent_messages % cant_templates])
                     if match.tweet_id:
                         text += '\nhttps://twitter.com/FutBot_/status/{}'.format(str(match.tweet_id))
                     self.api_connection.send_direct_message(follower.id_str, text)
-                    i += 1
-                except Exception as exception:
-                    print("ERROR: send_match_messages() - e=" + str(exception))
+                    sent_messages += 1
+        except Exception as exception:
+            print("ERROR: send_match_messages() - e=" + str(exception))
+        finally:
+            metrics.increase_metric(metrics.SENT_MATCHES, sent_messages)
 
     def get_screen_names(self, keys_list):
         ''' Retuns string containing sreen_names for each key in list given by parameter '''
