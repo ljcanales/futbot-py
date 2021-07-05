@@ -1,3 +1,5 @@
+''' Metric module: updates metrics values '''
+
 import src.util.files as fs
 import src.util.date as date_util
 
@@ -14,6 +16,15 @@ SENT_MATCHES = 'sent_messages'
 POSTED_STORIES = 'posted_stories'
 
 def update_metric(metric_name, new_value):
+    """
+        Update a metric
+        Parameters
+        ----------
+        metric_name: str
+            name of the metric
+        new_value: int
+            new value for the metric
+    """
     metrics = read_or_create_metric()
     updated = False
     
@@ -32,22 +43,56 @@ def update_metric(metric_name, new_value):
         print('METRICS -> [{}] metric updated to [{}]'.format(metric_name, new_value))
     
 def increase_metric(metric_name, increment):
+    """
+        Increase the value of a metric
+
+        Parameters
+        ----------
+        metric_name: str
+            name of the metric
+        increment: int
+            the increment for the metric
+    """
     if increment > 0:
-        new_value = get_metric(metric_name) + increment
-        update_metric(metric_name, new_value)
+        actual_value = get_metric(metric_name)
+        if type(actual_value) == int:
+            new_value = get_metric(metric_name) + increment
+            update_metric(metric_name, new_value)
 
 def get_metric(metric_name):
+    """
+        Returns the value for metric_name
+        
+        Parameters
+        ----------
+        metric_name: str
+            name of the metric
+        
+        Returns
+        -------
+        int
+            value of the metric
+    """
     metrics = read_or_create_metric()
 
     if metric_name in metrics[INSTAGRAM].keys():
         return metrics[INSTAGRAM][metric_name]
     elif metric_name in metrics[TWITTER].keys():
         return metrics[TWITTER][metric_name]
-    
+
+    print('Wrong metric_name! -> [{}]'.format(metric_name))
     return None
 
 
-def read_or_create_metric():
+def read_or_create_metric() -> dict:
+    """
+        Reads saved metrics, or creates metrics dict
+
+        Returns
+        -------
+        dict
+            metric dict
+    """
     metrics = fs.read_json_file(METRICS_PATH)
     if not metrics:
         print('metrics.json not found. Creating new metrics.')
@@ -67,4 +112,3 @@ def get_metric_template():
         },
         str(LAST_UPDATE): ""
     }
-
