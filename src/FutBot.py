@@ -1,58 +1,38 @@
 ''' FutBot Module '''
 
-import os
-import datetime
-import json
-import re
+import os, datetime, json, re
+from typing import List
 from tweepy import OAuthHandler
 import tweepy
 from instagrapi import Client
 import src.util.files as fs
 import src.util.metrics as metrics
+import src.constants as constants # keys, paths, uri, etc
+from src.util.config import Config
 
 # TOURNAMENTS CONTROL MODULES
 from src.model.Match import Match
 from src.model.Tournament import Tournament
 from src.API_Sports import API_Sports
 
-#load keys
-API_KEY = os.environ['API_KEY']
-API_SECRET = os.environ['API_SECRET']
-ACCESS_KEY = os.environ['ACCESS_KEY']
-ACCESS_SECRET = os.environ['ACCESS_SECRET']
-UN_IG = os.environ['UN_IG']
-P_IG = os.environ['P_IG']
-
-API_MATCHES = os.environ['API_MATCHES']
-API_TEAMS = os.environ['API_TEAMS']
-IG_CREDENTIAL_PATH = 'ig_credential.json'
-
-# CONFIG FILE
-CONFIG_PATH='./config_file.json'
-
-# TEMPLATES FILE
-TEXT_TEMPLATES_PATH = "./text_templates.json"
-
 #sleeping time
 SLEEP_TIME = 300
-
-TIME_ZONE = datetime.timezone(datetime.timedelta(hours=-3)) #Argentina UTC-3
 
 class FutBot:
     ''' FutBot class - manage bot behavior '''
 
     def __init__(self):
-        self.config = fs.read_json_file(CONFIG_PATH)
+        self.config = Config(constants.file_path.CONFIG)
         self.api_connection = self.create_api()
         self.my_user_id = self.api_connection.me().id
         self.since_id_dm = 1
         self.last_mention_id = 1
-        self.last_update_request = datetime.datetime(2018,12,9,17,00).astimezone(TIME_ZONE)
+        self.last_update_request = datetime.datetime(2018,12,9,17,00).astimezone(constants.time.TIME_ZONE)
         self.insta_cl = None
         print("\n\nSTARTING... - " + str(get_actual_datetime()))
 
         # tournaments info
-        self.api_sports = API_Sports(API_MATCHES, API_TEAMS)
+        self.api_sports = API_Sports(constants.uri.API_MATCHES, constants.uri.API_TEAMS)
         self.tour_ids = ['1276', '3', '1324']
         self.tournaments = []
 
@@ -61,8 +41,8 @@ class FutBot:
 
         try:
             #authentication
-            auth = OAuthHandler(API_KEY, API_SECRET)
-            auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
+            auth = OAuthHandler(constants.tw_keys.API_KEY, constants.tw_keys.API_SECRET)
+            auth.set_access_token(constants.tw_keys.ACCESS_KEY, constants.tw_keys.ACCESS_SECRET)
             api_connection = tweepy.API(auth, wait_on_rate_limit = True, wait_on_rate_limit_notify = True)
 
             return api_connection
@@ -73,21 +53,26 @@ class FutBot:
 
     def login_with_credentials(self):
         self.insta_cl = None
-        if os.path.exists(IG_CREDENTIAL_PATH):
-            self.insta_cl = Client()
-            self.insta_cl.load_settings(IG_CREDENTIAL_PATH)
-            self.insta_cl.login(UN_IG, P_IG)
+        if os.path.exists(constants.file_path.IG_CREDENTIALS):
+            try:
+                self.insta_cl = Client()
+                self.insta_cl.load_settings(constants.file_path.IG_CREDENTIALS)
+                self.insta_cl.login(constants.ig_keys.USER_NAME, constants.ig_keys.PASSWORD)
+            except:
+                os.remove(constants.file_path.IG_CREDENTIALS)
+                self.insta_cl = Client()
+                self.insta_cl.login(constants.ig_keys.USER_NAME, constants.ig_keys.PASSWORD)
+                self.insta_cl.dump_settings(constants.file_path.IG_CREDENTIALS)
         else:
             self.insta_cl = Client()
-            self.insta_cl.login(UN_IG, P_IG)
-            self.insta_cl.dump_settings(IG_CREDENTIAL_PATH)
+            self.insta_cl.login(constants.ig_keys.USER_NAME, constants.ig_keys.PASSWORD)
+            self.insta_cl.dump_settings(constants.file_path.IG_CREDENTIALS)
         print('Log in [IG]')
 
     def update_bot(self):
         ''' Handle bot update functions '''
 
-        if self.config and self.config['update_config']:
-            self.config = fs.read_json_file(CONFIG_PATH)
+        self.config.update_config()
 
         self.update_tournaments()
 
@@ -107,7 +92,7 @@ class FutBot:
                 self.insta_cl = None
             return
         if not self.api_sports or not self.api_sports.status:
-            self.api_sports = API_Sports(API_MATCHES, API_TEAMS)
+            self.api_sports = API_Sports(constants.uri.API_MATCHES, constants.uri.API_TEAMS)
         if not self.insta_cl:
             self.login_with_credentials()
         if not self.tournaments:
@@ -149,12 +134,12 @@ class FutBot:
                             
                             img = self.api_sports.get_img_by_ids(self.get_team_ids(json_keys))
                             
-                            if self.config and self.config['tweet_match']:
+                            if self.config.is_activated('tweet_match'):
                                 status_id = self.tweet_status(match_text, img)
                                 match.tweet_id = status_id
                                 print("(TWITTER)Publicando partido -- " + match.equipo1 + "|" + match.equipo2)
                             matches_tweeted.append(match)
-                            if img and self.config and self.config['post_story_match']:
+                            if img and self.config.is_activated('post_story_match'):
                                 story_img = self.api_sports.get_vertical_img_by_ids(match)
                                 self.post_story(story_img)
                                 print("(INSTAGRAM)Publicando partido -- " + match.equipo1 + "|" + match.equipo2)
@@ -163,7 +148,7 @@ class FutBot:
 
             if matches_tweeted:
                 metrics.increase_metric(metrics.TWEETED_MATCHES, len(matches_tweeted))
-                if self.config and self.config['send_match_message']:
+                if self.config.is_activated('send_match_message'):
                     self.send_match_messages(matches_tweeted)
     
     def check_mentions(self):
@@ -254,7 +239,7 @@ class FutBot:
                 continue
         self.last_mention_id = new_id
 
-    def tweet_status(self, new_status, img_path = None, reply_to = None):
+    def tweet_status(self, new_status: str, img_path: str = None, reply_to: str = None):
         ''' Sends new status with the text given by parameter. Return status id_str '''
 
         try:
@@ -265,7 +250,7 @@ class FutBot:
         except Exception as exception:
             raise Exception(str(exception)) from exception
     
-    def tweet_status_lst(self, new_status):
+    def tweet_status_lst(self, new_status: List[str]):
         ''' Sends new status with each text in the list given by parameter '''
         reply_id = None
         try:
@@ -274,10 +259,10 @@ class FutBot:
         except Exception as exception:
             raise Exception(str(exception)) from exception
     
-    def send_match_messages(self, matches):
+    def send_match_messages(self, matches: List[Match]):
         ''' Sends match info to every follower '''
 
-        templates = fs.read_json_file(TEXT_TEMPLATES_PATH)
+        templates = fs.read_json_file(constants.file_path.TEXT_TEMPLATES)
         cant_templates = 0
 
         if templates and len(templates['match_message']) > 0:
@@ -303,8 +288,8 @@ class FutBot:
         finally:
             metrics.increase_metric(metrics.SENT_MATCHES, sent_messages)
 
-    def get_screen_names(self, keys_list):
-        ''' Retuns string containing sreen_names for each key in list given by parameter '''
+    def get_screen_names(self, keys_list: List[str]) -> str:
+        ''' Returns string containing sreen_names for each key in list given by parameter '''
 
         res = ""
         try:
@@ -318,8 +303,8 @@ class FutBot:
             res = ""
         return res
     
-    def get_team_ids(self, keys_list):
-        ''' Retuns string containing sreen_names for each key in list given by parameter '''
+    def get_team_ids(self, keys_list: List[str]) -> List[str]:
+        ''' Returns list containing team_ids for each key in list given by parameter '''
 
         res = []
         try:
@@ -338,13 +323,13 @@ class FutBot:
 
         try:
             last_status = self.api_connection.user_timeline(id=self.my_user_id, count=1, exclude_replies=True, exclude_rts=True,)[0]
-            return last_status.created_at.astimezone(TIME_ZONE).date()
+            return last_status.created_at.astimezone(constants.time.TIME_ZONE).date()
         except Exception as exception:
             raise Exception("ERROR: get_last_datetime() - e=" + str(exception)) from exception
 
         return None
     
-    def get_user_photo(self, user):
+    def get_user_photo(self, user: str) -> str:
         try:
             return self.api_connection.get_user(user.replace('@','')).profile_image_url_https.replace('_normal','')
         except:
@@ -360,9 +345,9 @@ class FutBot:
 def get_actual_datetime():
     ''' Returns actual datetime by TIME_ZONE '''
 
-    return datetime.datetime.now().astimezone(TIME_ZONE)
+    return datetime.datetime.now().astimezone(constants.time.TIME_ZONE)
 
-def split_users_vs(msg):
+def split_users_vs(msg: str) -> List[str]:
     result = re.findall("@\w*\s+vs.?\s+@\w*", msg)
     users = []
     
