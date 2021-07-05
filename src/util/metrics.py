@@ -32,8 +32,9 @@ def update_metric(metric_name, new_value):
         print('METRICS -> [{}] metric updated to [{}]'.format(metric_name, new_value))
     
 def increase_metric(metric_name, increment):
-    new_value = get_metric(metric_name) + increment
-    update_metric(metric_name, new_value)
+    if increment > 0:
+        new_value = get_metric(metric_name) + increment
+        update_metric(metric_name, new_value)
 
 def get_metric(metric_name):
     metrics = read_or_create_metric()
