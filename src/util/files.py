@@ -1,6 +1,7 @@
 import json
+from typing import Dict
 
-def read_json_file(path_file, object_hook=None):
+def read_json_file(path_file: str, object_hook=None) -> Dict:
     ''' Read a json file '''
 
     try:
@@ -9,7 +10,7 @@ def read_json_file(path_file, object_hook=None):
     except:
         return None
 
-def write_json_file(data, path_file, default=None):
+def write_json_file(data: Dict, path_file: str, default=None):
     ''' Write a json file '''
 
     from pathlib import Path

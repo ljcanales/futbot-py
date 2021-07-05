@@ -1,5 +1,6 @@
 ''' Metric module: updates metrics values '''
 
+from typing import Dict
 import src.util.files as fs
 import src.util.date as date_util
 
@@ -15,7 +16,7 @@ TWEETED_MATCHES = 'tweeted_matches'
 SENT_MATCHES = 'sent_messages'
 POSTED_STORIES = 'posted_stories'
 
-def update_metric(metric_name, new_value):
+def update_metric(metric_name: str, new_value: int):
     """
         Update a metric
         Parameters
@@ -42,7 +43,7 @@ def update_metric(metric_name, new_value):
         fs.write_json_file(metrics, METRICS_PATH)
         print('METRICS -> [{}] metric updated to [{}]'.format(metric_name, new_value))
     
-def increase_metric(metric_name, increment):
+def increase_metric(metric_name: str, increment: int):
     """
         Increase the value of a metric
 
@@ -59,7 +60,7 @@ def increase_metric(metric_name, increment):
             new_value = get_metric(metric_name) + increment
             update_metric(metric_name, new_value)
 
-def get_metric(metric_name):
+def get_metric(metric_name: str) -> int:
     """
         Returns the value for metric_name
         
@@ -84,7 +85,7 @@ def get_metric(metric_name):
     return None
 
 
-def read_or_create_metric() -> dict:
+def read_or_create_metric() -> Dict:
     """
         Reads saved metrics, or creates metrics dict
 
@@ -99,7 +100,7 @@ def read_or_create_metric() -> dict:
         metrics = get_metric_template()
     return metrics
 
-def get_metric_template():
+def get_metric_template() -> Dict:
     return {
         str(DATE_FROM) : str(date_util.get_actual_datetime()),
         str(TWITTER) : {
