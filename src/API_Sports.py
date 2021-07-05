@@ -32,7 +32,7 @@ class API_Sports():
                         for e in t['eventos']:
                             
                             mat_time = e['fecha'][11:][:5]
-                            equipos = re.split('\s*vs.?\s*', e['nombre'])
+                            equipos = re.split('(?:\s*vs.?\s*)|(?:\s*-\s*)|(?:\s*\(.*\)\s*)', e['nombre'])
                             mat_tv = []
                             for c in e['canales']:
                                 mat_tv.append(c['nombre'])
