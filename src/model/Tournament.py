@@ -6,7 +6,7 @@ TIME_ZONE = datetime.timezone(datetime.timedelta(hours=-3)) #Argentina UTC-3
 WEEK_DAYS = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
 class Tournament():
 
-    HASTAGS_BY_ID = {'3' : ['#Libertadores', '#CopaLibertadores'], '1276' : ['#CopaDeLaLiga'], '1324' : ['#CopaAmerica', '@CopaAmerica']}
+    HASTAGS_BY_ID = {'3' : ['#Libertadores', '#CopaLibertadores'], '1276' : ['#CopaDeLaLiga'], '1324' : ['#CopaAmerica', '@CopaAmerica'], '441' : ['#EURO2020', '@EURO2020']}
 
     def __init__(self, id):
         self.id = id
