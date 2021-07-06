@@ -22,6 +22,7 @@ class FutBot:
     ''' FutBot class - manage bot behavior '''
 
     def __init__(self):
+        print("\n\nSTARTING... - " + str(get_actual_datetime()))
         self.config = Config(constants.file_path.CONFIG)
         self.api_connection = self.create_api()
         self.my_user_id = self.api_connection.me().id
@@ -29,29 +30,28 @@ class FutBot:
         self.last_mention_id = 1
         self.last_update_request = datetime.datetime(2018,12,9,17,00).astimezone(constants.time.TIME_ZONE)
         self.insta_cl = None
-        print("\n\nSTARTING... - " + str(get_actual_datetime()))
 
         # tournaments info
         self.api_sports = API_Sports(constants.uri.API_MATCHES, constants.uri.API_TEAMS)
-        self.tour_ids = ['1276', '3', '1324']
+        self.tour_ids = ['1276', '3', '1324', '441']
         self.tournaments = []
 
     def create_api(self):
         ''' returns the connection to Twitter API '''
-
+        print('[TW] Connecting...')
         try:
             #authentication
             auth = OAuthHandler(constants.tw_keys.API_KEY, constants.tw_keys.API_SECRET)
             auth.set_access_token(constants.tw_keys.ACCESS_KEY, constants.tw_keys.ACCESS_SECRET)
             api_connection = tweepy.API(auth, wait_on_rate_limit = True, wait_on_rate_limit_notify = True)
-
+            print('[TW] Connected')
             return api_connection
-
         except BaseException as exception:
             print("Error in FutBot.create_api()", exception)
             return None
 
     def login_with_credentials(self):
+        print('[IG] Connecting...')
         self.insta_cl = None
         if os.path.exists(constants.file_path.IG_CREDENTIALS):
             try:
@@ -59,6 +59,7 @@ class FutBot:
                 self.insta_cl.load_settings(constants.file_path.IG_CREDENTIALS)
                 self.insta_cl.login(constants.ig_keys.USER_NAME, constants.ig_keys.PASSWORD)
             except:
+                print('[IG] Creating new credentials...')
                 os.remove(constants.file_path.IG_CREDENTIALS)
                 self.insta_cl = Client()
                 self.insta_cl.login(constants.ig_keys.USER_NAME, constants.ig_keys.PASSWORD)
@@ -67,7 +68,7 @@ class FutBot:
             self.insta_cl = Client()
             self.insta_cl.login(constants.ig_keys.USER_NAME, constants.ig_keys.PASSWORD)
             self.insta_cl.dump_settings(constants.file_path.IG_CREDENTIALS)
-        print('Log in [IG]')
+        print('[IG] Connected')
 
     def update_bot(self):
         ''' Handle bot update functions '''
@@ -110,7 +111,7 @@ class FutBot:
                         if tour and tour.matches:
                             self.tweet_status_lst(tour.print_tournament())
                             tours_tweeted += 1
-                            print("Publicando partidos del dia - " + tour.name)
+                            print("[TW] Publicando partidos del dia - " + tour.name)
                     except Exception as exception:
                         print("ERROR: update_tournaments()-(1)", exception)
                 metrics.increase_metric(metrics.TWEETED_DAY_MATCHES, tours_tweeted)
@@ -137,12 +138,12 @@ class FutBot:
                             if self.config.is_activated('tweet_match'):
                                 status_id = self.tweet_status(match_text, img)
                                 match.tweet_id = status_id
-                                print("(TWITTER)Publicando partido -- " + match.equipo1 + "|" + match.equipo2)
+                                print("[TW] Publicando partido -- " + match.equipo1 + "|" + match.equipo2)
                             matches_tweeted.append(match)
                             if img and self.config.is_activated('post_story_match'):
                                 story_img = self.api_sports.get_vertical_img_by_ids(match)
                                 self.post_story(story_img)
-                                print("(INSTAGRAM)Publicando partido -- " + match.equipo1 + "|" + match.equipo2)
+                                print("[IG] Publicando partido -- " + match.equipo1 + "|" + match.equipo2)
                         except Exception as e:
                             print("ERROR: update_tournaments()-(2) e=", e)
 
@@ -277,7 +278,8 @@ class FutBot:
         try:
             for follower in tweepy.Cursor(self.api_connection.followers,'FutBot_').items():
                 for match in matches:
-                    text = 'Hola @{}\n\n'.format(follower.screen_name)
+                    #text = 'Hola @{}\n\n'.format(follower.screen_name)
+                    text = ''
                     text += match.message_by_template(templates[sent_messages % cant_templates])
                     if match.tweet_id:
                         text += '\nhttps://twitter.com/FutBot_/status/{}'.format(str(match.tweet_id))
