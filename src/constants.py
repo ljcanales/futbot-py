@@ -4,7 +4,7 @@ from datetime import timezone, timedelta
 class file_path:
     CONFIG = './config_file.json'
     TEXT_TEMPLATES = './text_templates.json'
-    IG_CREDENTIALS = './config_file.json'
+    IG_CREDENTIALS = './ig_credential.json'
 
 class tw_keys:
     API_KEY = environ['API_KEY']
