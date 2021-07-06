@@ -114,10 +114,6 @@
 		"account_id": "2495199115",
 		"team_id": "134509"
 	},
-	"Australia": {
-		"account_id": null,
-		"team_id": "134500"
-	},
 	"Bolivia": {
 		"account_id": "3875560643",
 		"team_id": "136470"
@@ -146,10 +142,6 @@
 		"account_id": "1170209287",
 		"team_id": "136162"
 	},
-	"Qatar": {
-		"account_id": null,
-		"team_id": "136472"
-	},
 	"Uruguay": {
 		"account_id": "2511441026",
 		"team_id": "134504"
@@ -157,5 +149,23 @@
 	"Venezuela": {
 		"account_id": "2577349345",
 		"team_id": "136473"
+	},
+
+
+	"Espa\u00f1a": {
+		"account_id": "1139001474",
+		"team_id": "133909"
+	},
+	"Italia": {
+		"account_id": "469508969",
+		"team_id": "133910"
+	},
+	"Inglaterra": {
+		"account_id": "1903382054",
+		"team_id": "133914"
+	},
+	"Dinamarca": {
+		"account_id": "1725593058",
+		"team_id": "133906"
 	}
 }
