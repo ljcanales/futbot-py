@@ -139,7 +139,7 @@ class FutBot:
                                 status_id = self.tweet_status(match_text, img)
                                 match.tweet_id = status_id
                                 print("[TW] Publicando partido -- " + match.equipo1 + "|" + match.equipo2)
-                            matches_tweeted.append(match)
+                                matches_tweeted.append(match)
                             if img and self.config.is_activated('post_story_match'):
                                 story_img = self.api_sports.get_vertical_img_by_ids(match)
                                 self.post_story(story_img)
