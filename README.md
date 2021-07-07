@@ -13,10 +13,17 @@ Bot que publica partidos vía Twitter e Instagram.
 - Publica story con imagen por partido (antes de cada partido).
 
 # Instalación
-Instalar paquetes.
+Clonar repositorio
+```
+git clone https://github.com/ljcanales/FutBot
+```
+
+Instalar dependencias.
 ```
 pip3 install -r requirements.txt
 ```
+
+# Configuración
 Variables de entorno.
 ```
 export API_KEY=...
@@ -29,7 +36,6 @@ export API_MATCHES=...
 export API_TEAMS=...
 ```
 
-# Configuración
 Editar el archivo `config_file.json` con los valores deseados (true/false):
 
 ```
