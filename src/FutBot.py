@@ -57,16 +57,16 @@ class FutBot:
             try:
                 self.insta_cl = Client()
                 self.insta_cl.load_settings(constants.file_path.IG_CREDENTIALS)
-                self.insta_cl.login(constants.ig_keys.USER_NAME, constants.ig_keys.PASSWORD)
+                self.insta_cl.login(constants.ig_keys.USER_NAME, constants.ig_keys.PASSWORD, relogin=True)
             except:
                 print('[IG] Creating new credentials...')
                 os.remove(constants.file_path.IG_CREDENTIALS)
                 self.insta_cl = Client()
-                self.insta_cl.login(constants.ig_keys.USER_NAME, constants.ig_keys.PASSWORD)
+                self.insta_cl.login(constants.ig_keys.USER_NAME, constants.ig_keys.PASSWORD, relogin=True)
                 self.insta_cl.dump_settings(constants.file_path.IG_CREDENTIALS)
         else:
             self.insta_cl = Client()
-            self.insta_cl.login(constants.ig_keys.USER_NAME, constants.ig_keys.PASSWORD)
+            self.insta_cl.login(constants.ig_keys.USER_NAME, constants.ig_keys.PASSWORD, relogin=True)
             self.insta_cl.dump_settings(constants.file_path.IG_CREDENTIALS)
         print('[IG] Connected')
 
