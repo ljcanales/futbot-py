@@ -33,7 +33,7 @@ class FutBot:
 
         # tournaments info
         self.api_sports = API_Sports(constants.uri.API_MATCHES, constants.uri.API_TEAMS)
-        self.tour_ids = ['1276', '3', '1324', '441']
+        self.tour_ids = constants.tour_ids
         self.tournaments = []
 
     def create_api(self):
