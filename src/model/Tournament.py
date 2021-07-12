@@ -14,6 +14,7 @@ class Tournament():
         self.date = ""
         self.matches = []
         self.day_name = ""
+        self.tweet_id = ""
     
     def set_matches(self, new_lst):
         self.matches = new_lst

@@ -109,7 +109,7 @@ class FutBot:
                 for tour in self.tournaments:
                     try:
                         if tour and tour.matches:
-                            self.tweet_status_lst(tour.print_tournament())
+                            tour.tweet_id = self.tweet_status_lst(tour.print_tournament())
                             tours_tweeted += 1
                             print("[TW] Publicando partidos del dia - " + tour.name)
                     except Exception as exception:
@@ -254,9 +254,14 @@ class FutBot:
     def tweet_status_lst(self, new_status: List[str]):
         ''' Sends new status with each text in the list given by parameter '''
         reply_id = None
+        first_id = None
         try:
             for status in new_status:
-                reply_id = self.api_connection.update_status(status = status, in_reply_to_status_id = reply_id, auto_populate_reply_metadata = True).id_str
+                if reply_id:
+                    first_id = reply_id = self.api_connection.update_status(status = status, in_reply_to_status_id = reply_id, auto_populate_reply_metadata = True).id_str
+                else:
+                    reply_id = self.api_connection.update_status(status = status, in_reply_to_status_id = reply_id, auto_populate_reply_metadata = True).id_str
+            return first_id
         except Exception as exception:
             raise Exception(str(exception)) from exception
     
