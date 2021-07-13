@@ -24,8 +24,8 @@ class time:
     TIME_ZONE = timezone(timedelta(hours=-3)) #Argentina UTC-3
 
 tour_ids = [
-    '1276',
-    '3', # CP
+    '1346', # LPA
+    '3',    # CP
     '1324', # CA
-    '441' # EC
+    '441'   # EC
 ]
