@@ -5,6 +5,7 @@ class file_path:
     CONFIG = './config_file.json'
     TEXT_TEMPLATES = './text_templates.json'
     IG_CREDENTIALS = './ig_credential.json'
+    CLUB_INFO = './clubsid.json'
 
 class tw_keys:
     API_KEY = environ['API_KEY']
