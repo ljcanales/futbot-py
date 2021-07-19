@@ -25,6 +25,9 @@ class FutBotTwitter:
         except BaseException as exception:
             print("Error in FutBotTwitter.__init__()", str(exception))
     
+    def update():
+        pass
+    
     def tweet_status(self, new_status: str, img_path: str = None, reply_to: str = None):
         ''' Sends new status with the text given by parameter. Return status id_str '''
 
