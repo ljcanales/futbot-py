@@ -9,15 +9,22 @@ class FutBotInstagram:
     def __init__(self):
         #self.login()
         pass
-    
+
+    def update(self):
+        pass
+
     def login(self):
         print('[IG] Connecting...')
-        self.insta_cl = None
+        if self.is_logged():
+            print('[IG] already logged!')
+            return
         if os.path.exists(constants.file_path.IG_CREDENTIALS):
+            print('[IG] Credentials found...')
             try:
                 self.insta_cl = Client()
                 self.insta_cl.load_settings(constants.file_path.IG_CREDENTIALS)
                 self.insta_cl.login(constants.ig_keys.USER_NAME, constants.ig_keys.PASSWORD, relogin=True)
+                print('[IG] Logged in with saved credentials...')
             except:
                 print('[IG] Creating new credentials...')
                 os.remove(constants.file_path.IG_CREDENTIALS)
@@ -25,6 +32,7 @@ class FutBotInstagram:
                 self.insta_cl.login(constants.ig_keys.USER_NAME, constants.ig_keys.PASSWORD, relogin=True)
                 self.insta_cl.dump_settings(constants.file_path.IG_CREDENTIALS)
         else:
+            print('[IG] Credentials not found...')
             self.insta_cl = Client()
             self.insta_cl.login(constants.ig_keys.USER_NAME, constants.ig_keys.PASSWORD, relogin=True)
             self.insta_cl.dump_settings(constants.file_path.IG_CREDENTIALS)
