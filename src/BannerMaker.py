@@ -7,7 +7,7 @@ class BannerMaker:
         self.url_teams = url_teams
 
     def get_banners(self, ids, match):
-        img_paths = {}
+        img_paths = {'horizontal': None, 'vertical': None}
         try:
             if not ids[0] or not ids[1] or not type(ids[0])==str or not type(ids[1])==str:
                 raise Exception("IDs not specified or not str type")
