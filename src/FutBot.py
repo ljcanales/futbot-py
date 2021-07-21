@@ -3,6 +3,7 @@
 import os, datetime, json, re
 from typing import List
 from instagrapi import Client
+from src.FutBotSocial.FutBotInstagram import FutBotInstagram
 from src.BannerMaker import BannerMaker
 from src.FutBotSocial.FutBotTwitter import FutBotTwitter
 import src.util.files as fs
@@ -25,9 +26,9 @@ class FutBot:
     def __init__(self):
         print("\n\nSTARTING... - " + str(get_actual_datetime()))
         self.config = Config(constants.file_path.CONFIG)
-        self.futbot_twitter = FutBotTwitter() # adsdfasfsfafaaffaf
 
-        self.insta_cl = None
+        self.futbot_twitter = FutBotTwitter()
+        self.futbot_instagram = FutBotInstagram()
 
         # tournaments info
         self.api_sports = API_Sports(constants.uri.API_MATCHES)
@@ -35,26 +36,6 @@ class FutBot:
 
         self.tour_ids = constants.tour_ids
         self.tournaments = []
-
-    def login_with_credentials(self):
-        print('[IG] Connecting...')
-        self.insta_cl = None
-        if os.path.exists(constants.file_path.IG_CREDENTIALS):
-            try:
-                self.insta_cl = Client()
-                self.insta_cl.load_settings(constants.file_path.IG_CREDENTIALS)
-                self.insta_cl.login(constants.ig_keys.USER_NAME, constants.ig_keys.PASSWORD, relogin=True)
-            except:
-                print('[IG] Creating new credentials...')
-                os.remove(constants.file_path.IG_CREDENTIALS)
-                self.insta_cl = Client()
-                self.insta_cl.login(constants.ig_keys.USER_NAME, constants.ig_keys.PASSWORD, relogin=True)
-                self.insta_cl.dump_settings(constants.file_path.IG_CREDENTIALS)
-        else:
-            self.insta_cl = Client()
-            self.insta_cl.login(constants.ig_keys.USER_NAME, constants.ig_keys.PASSWORD, relogin=True)
-            self.insta_cl.dump_settings(constants.file_path.IG_CREDENTIALS)
-        print('[IG] Connected')
 
     def update_bot(self):
         ''' Handle bot update functions '''
@@ -65,6 +46,9 @@ class FutBot:
 
         #self.check_mentions()
 
+        self.futbot_twitter.update()
+        self.futbot_instagram.update()
+
         print("- Update Flag at {}".format(str(get_actual_datetime())))
     
     def update_tournaments(self):
@@ -73,16 +57,14 @@ class FutBot:
         if get_actual_datetime().hour < 9:
             if self.tournaments:
                 self.tournaments = []
-            if self.insta_cl:
-                self.insta_cl.logout()
-                self.insta_cl = None
+            if self.futbot_instagram.is_logged():
+                self.futbot_instagram.logout()
             return
-        if self.api_sports.last_update.date() < get_actual_datetime.date() or not self.api_sports.status:
+        if self.api_sports.last_update.date() < get_actual_datetime().date() or not self.api_sports.status:
             self.api_sports.update_info()
-        if not self.insta_cl:
-            self.login_with_credentials()
+        if not self.futbot_instagram.is_logged():
+            self.futbot_instagram.login()
         if not self.tournaments:
-            print("--  updating TOURNAMENTS information --")
             for id in self.tour_ids:
                 res_tour = self.api_sports.get_tour_by_id(id)
                 if res_tour:
@@ -108,7 +90,7 @@ class FutBot:
                     for match in tour.matches[:]:
                         time_lst = match.time.split(':')
                         match_time = get_actual_datetime().replace(hour = int(time_lst[0]), minute = int(time_lst[1]))
-                        
+
                         if match_time > alert_time:
                             break
                         tour.matches.remove(match)
@@ -116,15 +98,15 @@ class FutBot:
                             match_text = match.print_match()
                             json_keys = [x.replace(" ", "") for x in match.get_equipos()]
                             match_text += self.futbot_twitter.get_screen_names(json_keys)
-                            
+
                             banners = self.banner_maker.get_banners(get_team_ids(json_keys), match)
 
-                            if self.config.is_activated('tweet_match') and banners and banners['horizontal']:
+                            if self.config.is_activated('tweet_match') and banners:
                                 match.tweet_id = self.futbot_twitter.tweet_status(match_text, banners['horizontal'])
                                 print("[TW] Publicando partido -- " + match.equipo1 + "|" + match.equipo2)
                                 matches_tweeted.append(match)
-                            if self.config.is_activated('post_story_match') and banners and banners['vertical']:
-                                self.post_story(banners['vertical'])
+                            if self.config.is_activated('post_story_match') and banners:
+                                self.futbot_instagram.post_story(banners['vertical'])
                                 print("[IG] Publicando partido -- " + match.equipo1 + "|" + match.equipo2)
                         except Exception as e:
                             print("ERROR: update_tournaments()-(2) e=", e)
@@ -133,13 +115,6 @@ class FutBot:
                 metrics.increase_metric(metrics.TWEETED_MATCHES, len(matches_tweeted))
                 if self.config.is_activated('send_match_message'):
                     self.futbot_twitter.send_match_messages(matches_tweeted)
-
-    def post_story(self, path):
-        try:
-            if path:
-                self.insta_cl.photo_upload_to_story(path, 'From FutBot')
-        except Exception as exception:
-            raise Exception(str(exception)) from exception
 
 def get_team_ids(keys_list: List[str]) -> List[str]:
         ''' Returns list containing team_ids for each key in list given by parameter '''
