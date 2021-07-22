@@ -95,6 +95,7 @@ class FutBot:
                             break
                         tour.matches.remove(match)
                         try:
+                            print('\n[FutBot] Publicando partido -- {} vs {} --'.format(match.equipo1, match.equipo2))
                             match_text = match.print_match()
                             json_keys = [x.replace(" ", "") for x in match.get_equipos()]
                             match_text += self.futbot_twitter.get_screen_names(json_keys)
@@ -103,11 +104,9 @@ class FutBot:
 
                             if self.config.is_activated('tweet_match') and banners:
                                 match.tweet_id = self.futbot_twitter.tweet_status(match_text, banners['horizontal'])
-                                print("[TW] Publicando partido -- " + match.equipo1 + "|" + match.equipo2)
                                 matches_tweeted.append(match)
                             if self.config.is_activated('post_story_match') and banners:
                                 self.futbot_instagram.post_story(banners['vertical'])
-                                print("[IG] Publicando partido -- " + match.equipo1 + "|" + match.equipo2)
                         except Exception as e:
                             print("ERROR: update_tournaments()-(2) e=", e)
 

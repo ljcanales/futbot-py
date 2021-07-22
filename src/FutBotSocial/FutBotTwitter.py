@@ -32,10 +32,14 @@ class FutBotTwitter:
         ''' Sends new status with the text given by parameter. Return status id_str '''
 
         try:
+            print('[TW] Tweeting status...')
+            status_id = None
             if img_path:
-                return self.api_connection.update_with_media(status = new_status, filename = img_path, in_reply_to_status_id = reply_to, auto_populate_reply_metadata = True).id_str
+                status_id = self.api_connection.update_with_media(status = new_status, filename = img_path, in_reply_to_status_id = reply_to, auto_populate_reply_metadata = True).id_str
             else:
-                return self.api_connection.update_status(status = new_status, in_reply_to_status_id = reply_to, auto_populate_reply_metadata = True).id_str
+                status_id = self.api_connection.update_status(status = new_status, in_reply_to_status_id = reply_to, auto_populate_reply_metadata = True).id_str
+            print('[TW] Status tweeted')
+            return status_id
         except Exception as exception:
             raise Exception(str(exception)) from exception
 
