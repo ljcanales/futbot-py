@@ -1,13 +1,15 @@
+from typing import Dict, List
+from src.model.Match import Match
 from PIL import Image, ImageDraw, ImageFont
 from textwrap import wrap
 from requests import get
 
 class BannerMaker:
-    def __init__(self, url_teams):
+    def __init__(self, url_teams: str):
         self.url_teams = url_teams
 
-    def get_banners(self, ids, match):
-        img_paths = {'horizontal': None, 'vertical': None}
+    def get_banners(self, ids: List[str], match: Match) -> Dict[str, str]:
+        img_paths = {'horizontal': '', 'vertical': ''}
         try:
             if not ids[0] or not ids[1] or not type(ids[0])==str or not type(ids[1])==str:
                 raise Exception("IDs not specified or not str type")
@@ -22,7 +24,7 @@ class BannerMaker:
 
         return img_paths
 
-    def get_horizontal_banner(self, image1, image2):
+    def get_horizontal_banner(self, image1: Image.Image, image2: Image.Image) -> str:
 
         try:
             # concatenate
@@ -46,9 +48,9 @@ class BannerMaker:
         except Exception as e:
             print("ERROR: BannerMaker.get_horizontal_banner - e: ", str(e))
 
-        return None
+        return ''
     
-    def get_vertical_banner(self, image1, image2, match):
+    def get_vertical_banner(self, image1: Image.Image, image2: Image.Image, match: Match) -> str:
 
         try:
             # concatenate
@@ -77,9 +79,9 @@ class BannerMaker:
         except Exception as e:
             print("ERROR: BannerMaker.get_vertical_banner - e: ", str(e))
 
-        return None
+        return ''
 
-    def get_team_badge(self, id: str):
+    def get_team_badge(self, id: str) -> Image.Image:
         try:
             team_info = get(self.url_teams + id).json()
             img_url = team_info['teams'][0]['strTeamBadge']
