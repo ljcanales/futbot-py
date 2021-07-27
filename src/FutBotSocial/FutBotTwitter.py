@@ -25,10 +25,10 @@ class FutBotTwitter:
         except BaseException as exception:
             print("Error in FutBotTwitter.__init__()", str(exception))
     
-    def update(self):
+    def update(self) -> None:
         pass
     
-    def tweet_status(self, new_status: str, img_path: str = None, reply_to: str = None):
+    def tweet_status(self, new_status: str, img_path: str = None, reply_to: str = None) -> str:
         ''' Sends new status with the text given by parameter. Return status id_str '''
 
         try:
@@ -43,21 +43,22 @@ class FutBotTwitter:
         except Exception as exception:
             raise Exception(str(exception)) from exception
 
-    def tweet_status_lst(self, new_status: List[str]):
+    def tweet_status_lst(self, new_status: List[str]) -> str:
         ''' Sends new status with each text in the list given by parameter '''
+
         reply_id = None
         first_id = None
         try:
             for status in new_status:
                 if reply_id:
-                    first_id = reply_id = self.api_connection.update_status(status = status, in_reply_to_status_id = reply_id, auto_populate_reply_metadata = True).id_str
-                else:
                     reply_id = self.api_connection.update_status(status = status, in_reply_to_status_id = reply_id, auto_populate_reply_metadata = True).id_str
+                else:
+                    first_id = reply_id = self.api_connection.update_status(status = status, in_reply_to_status_id = reply_id, auto_populate_reply_metadata = True).id_str
             return first_id
         except Exception as exception:
             raise Exception(str(exception)) from exception
 
-    def send_match_messages(self, matches: List[Match]):
+    def send_match_messages(self, matches: List[Match]) -> None:
         ''' Sends match info to every follower '''
 
         templates = fs.read_json_file(constants.file_path.TEXT_TEMPLATES)
@@ -68,7 +69,7 @@ class FutBotTwitter:
             cant_templates = len(templates)
         else:
             print('Message templates not found, check text_templates.json file')
-            return
+            return None
         
         sent_messages = 0
         

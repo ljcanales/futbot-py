@@ -37,7 +37,7 @@ class FutBot:
         self.tour_ids = constants.tour_ids
         self.tournaments = []
 
-    def update_bot(self):
+    def update_bot(self) -> None:
         ''' Handle bot update functions '''
 
         self.config.update_config()
@@ -51,7 +51,7 @@ class FutBot:
 
         print("- Update Flag at {}".format(str(get_actual_datetime())))
     
-    def update_tournaments(self):
+    def update_tournaments(self) -> None:
         ''' Handle tournaments information '''
 
         if get_actual_datetime().hour < 9:
