@@ -21,12 +21,13 @@ class API_Sports():
             self.status = False
             print("ERROR: API_Sports.init() - e: ", str(exception))
 
-    def get_tour_by_id(self, id_event):
+    def get_tour_by_id(self, id_event: str) -> Tournament:
+        print('\n[API_Sports] Getting tour (id = {})'.format(id_event))
         tour = Tournament(id_event)
         try:
             if self.res and self.res['fechas'] and self.res['fechas'][0]:
                 d = self.res['fechas'][0]['fecha'].split('-')
-                tour.set_date(d[2] + "-" + d[1] + "-" + d[0])
+                tour.set_date('{}-{}-{}'.format(d[2], d[1], d[0]))
 
                 matches = []
                 for t in self.res['fechas'][0]['torneos']:
@@ -46,10 +47,14 @@ class API_Sports():
         except Exception as e:
             print("ERROR: API_Sports.get_by_id()", e)
             tour = None
+
+        print('[API_Sports]  --  name: {}'.format(tour.name))
+        print('[API_Sports]  --  matches: {}\n'.format(len(tour.matches)))
         
         return tour
 
-    def update_info(self):
+    def update_info(self) -> None:
+        print("[API_Sports] Updating TOURNAMENTS information")
         try:
             self.res = requests.get(self.api_url).json()
             self.last_update = get_actual_datetime()
