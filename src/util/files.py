@@ -10,7 +10,7 @@ def read_json_file(path_file: str, object_hook=None) -> Dict:
     except:
         return None
 
-def write_json_file(data: Dict, path_file: str, default=None):
+def write_json_file(data: Dict, path_file: str, default=None) -> None:
     ''' Write a json file '''
 
     from pathlib import Path

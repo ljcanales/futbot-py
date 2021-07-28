@@ -16,7 +16,7 @@ TWEETED_MATCHES = 'tweeted_matches'
 SENT_MATCHES = 'sent_messages'
 POSTED_STORIES = 'posted_stories'
 
-def update_metric(metric_name: str, new_value: int):
+def update_metric(metric_name: str, new_value: int) -> None:
     """
         Update a metric
         Parameters
@@ -43,7 +43,7 @@ def update_metric(metric_name: str, new_value: int):
         fs.write_json_file(metrics, METRICS_PATH)
         print('METRICS -> [{}] metric updated to [{}]'.format(metric_name, new_value))
     
-def increase_metric(metric_name: str, increment: int):
+def increase_metric(metric_name: str, increment: int) -> None:
     """
         Increase the value of a metric
 
