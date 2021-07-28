@@ -44,13 +44,11 @@ class API_Sports():
                             matches.append(match)
                         break
                 tour.set_matches(matches)
+                print('[API_Sports]  --  name: {}'.format(tour.name))
+                print('[API_Sports]  --  matches: {}\n'.format(len(tour.matches)))
         except Exception as e:
             print("ERROR: API_Sports.get_by_id()", e)
             tour = None
-
-        print('[API_Sports]  --  name: {}'.format(tour.name))
-        print('[API_Sports]  --  matches: {}\n'.format(len(tour.matches)))
-        
         return tour
 
     def update_info(self) -> None:
