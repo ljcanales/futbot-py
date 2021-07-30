@@ -6,7 +6,7 @@ from requests import get
 
 class BannerMaker:
     def __init__(self, url_teams: str):
-        self.url_teams = url_teams
+        self._url_teams = url_teams
 
     def get_banners(self, ids: List[str], match: Match) -> Dict[str, str]:
         img_paths = {'horizontal': '', 'vertical': ''}
@@ -83,7 +83,7 @@ class BannerMaker:
 
     def get_team_badge(self, id: str) -> Image.Image:
         try:
-            team_info = get(self.url_teams + id).json()
+            team_info = get(self._url_teams + id).json()
             img_url = team_info['teams'][0]['strTeamBadge']
             img = Image.open(get(img_url, stream=True).raw)
             return img
