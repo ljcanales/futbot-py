@@ -57,13 +57,13 @@ class FutBot:
         if get_actual_datetime().hour < 9:
             if self.tournaments:
                 self.tournaments = []
-            if self.futbot_instagram.is_logged():
-                self.futbot_instagram.logout()
+            # if self.futbot_instagram.is_logged():
+            #     self.futbot_instagram.logout()
             return
         if self.api_sports.last_update.date() < get_actual_datetime().date() or not self.api_sports.status:
             self.api_sports.update_info()
-        if not self.futbot_instagram.is_logged():
-            self.futbot_instagram.login()
+        # if not self.futbot_instagram.is_logged():
+        #     self.futbot_instagram.login()
         if not self.tournaments:
             for id in self.tour_ids:
                 res_tour = self.api_sports.get_tour_by_id(id)
