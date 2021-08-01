@@ -5,17 +5,24 @@
 Bot que publica partidos vía Twitter e Instagram.
 
 **TWITTER**
-- Publica tweet con los partidos del dia (un tweet por torneo).
-- Publica tweet con imagen por partido (antes de cada partido).
-- Envia mensaje directo como recordatorio a los seguidores (adjuntando url al tweet).
+- Publica los partidos del dia (por torneo).
+- Publica partido (con imagen, en caso que sea posible).
+- Recordatorio de partido a los seguidores.
 
 **INSTAGRAM**
-- Publica story con imagen por partido (antes de cada partido).
+- Publica partido (Instagram Story).
 
 # Instalación
 Clonar repositorio
 ```
-git clone https://github.com/ljcanales/FutBot
+git clone https://github.com/ljcanales/futbot-py
+cd futbot-py
+```
+
+(Opcional) Crear entorno virtual y activarlo
+```
+python3 -m venv env
+source env/bin/activate
 ```
 
 Instalar dependencias.
@@ -36,11 +43,11 @@ export API_MATCHES=...
 export API_TEAMS=...
 ```
 
-Editar el archivo `config_file.json` con los valores deseados (true/false):
+Editar el archivo `config_file.json` (true/false):
 
 ```
 {
- "send_match_message": true,
+ "send_match_message": false,
  "tweet_match" : true,
  "post_story_match" : true,
  "update_config" : true
