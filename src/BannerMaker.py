@@ -84,8 +84,9 @@ class BannerMaker:
             return img
         except Exception as exception:
             raise Exception('ERROR: BannerMaker.get_team_badge - e: ', str(exception))
-    
-    def get_banner_by_urls(self, urls_lst: List[str]) -> str:
+
+    @staticmethod
+    def get_banner_by_urls(urls_lst: List[str]) -> str:
         ''' Make match image from image urls given by parameter '''
 
         try:
