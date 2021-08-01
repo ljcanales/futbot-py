@@ -56,21 +56,16 @@ class BannerMaker:
             # concatenate
             image1 = image1.resize((370,370))
             image2 = image2.resize((370,370))
-            #middle_image = Image.open('./outputs/middle_img.png')
 
             #final_img = Image.new('RGB', (width_final, height_final), (3, 64, 97))
             final_img = Image.open('./outputs/default_vertical_bg.jpg')
             width_final = final_img.width
             height_final = final_img.height
-            #final_img = final_img.resize((width_final, height_final))
+            
             txt = GenerateText((width_final,height_final), 'white', match)
-            # final_img.paste(image1, (int((width_final - image1.width)/2), int((height_final / 2 - image1.height) / 2)), image1)
-            # final_img.paste(image2, (int((width_final - image1.width)/2), int((height_final / 2 + (height_final / 2 - image2.height) * 2 / 3))), image2)
             final_img.paste(image1, (int((width_final / 2 - image1.width) / 3), int((height_final - image1.height)/2)), image1)
             final_img.paste(image2, (int((width_final / 2 + (width_final / 2 - image2.width) * 2 / 3)), int((height_final - image1.height)/2)), image2)
-            final_img.paste(txt,(0,0),txt)
-            #final_img.paste(middle_image, (int((width_final - middle_image.width) / 2), int((height_final - middle_image.height) / 2)), middle_image)
-            
+            final_img.paste(txt,(0,0),txt)            
             
             img_path = './outputs/img_vertical_final.jpg'
             final_img.save(img_path)
@@ -88,53 +83,42 @@ class BannerMaker:
             img = Image.open(get(img_url, stream=True).raw)
             return img
         except Exception as exception:
-            raise Exception('ERROR: API_Sports.get_team_badge - e: ', str(exception))
+            raise Exception('ERROR: BannerMaker.get_team_badge - e: ', str(exception))
     
-    # def get_banner_by_urls(self, urls_lst):
-    #     ''' Make match image from image urls given by parameter '''
+    def get_banner_by_urls(self, urls_lst: List[str]) -> str:
+        ''' Make match image from image urls given by parameter '''
 
-    #     try:
-    #         if not urls_lst[0] or not urls_lst[1] or not type(urls_lst[0])==str or not type(urls_lst[1])==str:
-    #             raise Exception("URLs not specified or not str type")
-            
-    #         img1_data = requests.get(urls_lst[0]).content
-    #         with open('./outputs/img_1.png', 'wb') as img1_file:
-    #             img1_file.write(img1_data)
+        try:
+            if not urls_lst[0] or not urls_lst[1] or not type(urls_lst[0])==str or not type(urls_lst[1])==str:
+                raise Exception("URLs not specified or not str type")
 
-    #         img2_data = requests.get(urls_lst[1]).content
-    #         with open('./outputs/img_2.png', 'wb') as img2_file:
-    #             img2_file.write(img2_data)
-            
-    #         # concatenate
-    #         image1 = Image.open('./outputs/img_1.png')
-    #         image2 = Image.open('./outputs/img_2.png')
-    #         middle_image = Image.open('./outputs/middle_img.png')
-    #         final_img = Image.open('./outputs/default_bg.jpg')
-    #         size = (400, 400)
-    #         # Scale the images to be the size of the circle
-    #         image1 = image1.resize(size, Image.ANTIALIAS)
-    #         image2 = image2.resize(size, Image.ANTIALIAS)
-    #         # Create the circle mask
-    #         mask = Image.new('L', image1.size)
-    #         draw = ImageDraw.Draw(mask)
-    #         draw.ellipse((0, 0) + image1.size, fill=255)
-            
-    #         # Prepare final_img and paste
-    #         width_final = final_img.width
-    #         height_final = final_img.height
-    #         final_img.paste(image1, (int((width_final / 2 - image1.width) / 3), int((height_final - image1.height)/2)), mask)
-    #         final_img.paste(image2, (int((width_final / 2 + (width_final / 2 - image2.width) * 2 / 3)), int((height_final - image1.height)/2)), mask)
-    #         final_img.paste(middle_image, (int((width_final - middle_image.width) / 2), int((height_final - middle_image.height) / 2)), middle_image)
+            # concatenate
+            image1 = Image.open(get(urls_lst[0], stream=True).raw)
+            image2 = Image.open(get(urls_lst[1], stream=True).raw)
+            middle_image = Image.open('./outputs/middle_img.png')
+            final_img = Image.open('./outputs/default_bg.jpg')
+            size = (400, 400)
+            # Scale the images to be the size of the circle
+            image1 = image1.resize(size, Image.ANTIALIAS)
+            image2 = image2.resize(size, Image.ANTIALIAS)
+            # Create the circle mask
+            mask = Image.new('L', image1.size)
+            draw = ImageDraw.Draw(mask)
+            draw.ellipse((0, 0) + image1.size, fill=255)
 
-    #         img_path = './outputs/img_users_final.jpg'
-    #         final_img.save(img_path)
+            # Prepare final_img and paste
+            width_final = final_img.width
+            height_final = final_img.height
+            final_img.paste(image1, (int((width_final / 2 - image1.width) / 3), int((height_final - image1.height)/2)), mask)
+            final_img.paste(image2, (int((width_final / 2 + (width_final / 2 - image2.width) * 2 / 3)), int((height_final - image1.height)/2)), mask)
+            final_img.paste(middle_image, (int((width_final - middle_image.width) / 2), int((height_final - middle_image.height) / 2)), middle_image)
 
-    #         return img_path
-            
-    #     except Exception as e:
-    #         print("ERROR: get_banner_by_urls() "+str(e))
-        
-    #     return None
+            img_path = './outputs/img_users_final.jpg'
+            final_img.save(img_path)
+            return img_path
+        except Exception as e:
+            print("ERROR: get_banner_by_urls() "+str(e))
+        return None
     
 
 def GenerateText(size, fg, match):
