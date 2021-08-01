@@ -3,6 +3,7 @@ from typing import List
 from tweepy import OAuthHandler
 import tweepy
 from src.model.Match import Match
+from src.BannerMaker import BannerMaker
 import src.constants as constants
 import src.util.files as fs
 import src.util.metrics as metrics
@@ -26,6 +27,7 @@ class FutBotTwitter:
             print("Error in FutBotTwitter.__init__()", str(exception))
     
     def update(self) -> None:
+        # self._check_mentions()
         pass
     
     def tweet_status(self, new_status: str, img_path: str = None, reply_to: str = None) -> str:
@@ -119,6 +121,94 @@ class FutBotTwitter:
             return self._api_connection.get_user(user.replace('@','')).profile_image_url_https.replace('_normal','')
         except:
             return None
+    
+    def _check_mentions(self) -> None:
+        presentation = "Hola 👋, mi nombre es FutBot🤖 y te recuerdo los partidos \n\nSeguime y activa las notificaciones🔔"
+        follow = " seguime y"
+        notification = " activa las notificaciones🔔 para enterarte de cada partido ⚽"
+        
+        new_id = self._last_mention_id
+        for tweet in tweepy.Cursor(self._api_connection.mentions_timeline, since_id = self._last_mention_id).items():
+            new_id = max(tweet.id, new_id)
+            if self._last_mention_id == 1:
+                break
+            if tweet.user.id == self._my_user_id:
+                continue
+            try:
+                txt = ""
+                if tweet.in_reply_to_user_id  == self._my_user_id:
+                    # fijarse si ya respondi el anterior
+                    if not tweet.in_reply_to_status_id_str:
+                        # es None, creó un nuevo tweet mencionando
+                        print("------------in-reply-------------")
+                        print("FROM: " + tweet.user.screen_name)
+                        print("TEXT: " + tweet.text)
+                        print("ANSWER: " + presentation)
+                        print("---------------------------------")
+                        ## BANNER MAKER V1.1
+                        check_vs = split_users_vs(tweet.text)
+                        if check_vs:
+                            users_img_urls = [self.get_user_photo(u) for u in check_vs]
+                            img = BannerMaker.get_banner_by_urls(users_img_urls)
+                            if img:
+                                self.tweet_status(new_status = '', img_path = img, reply_to = tweet.id)
+                        else:
+                            self.tweet_status(new_status = presentation, reply_to = tweet.id)
+                    else:
+                        my_tweet = self._api_connection.get_status(tweet.in_reply_to_status_id_str)
+                        # if ERROR tweet deleted
+                        txt = "Hola @{},".format(tweet.user.screen_name)
+                        if not self._api_connection.lookup_friendships([tweet.user.id])[0].is_followed_by:
+                            txt += follow
+                        txt += notification
+                        if my_tweet.in_reply_to_status_id_str:
+                            # si my_tweet es una respuesta
+                            if my_tweet.in_reply_to_user_id_str != tweet.user.id_str:
+                                # si my_tweet no respondio al mismo usuario
+                                print("------------in-replynfslnfsdo-------------")
+                                print("FROM: " + tweet.user.screen_name)
+                                print("TEXT: " + tweet.text)
+                                print("ANSWER: " + txt)
+                                print("---------------------------------")
+                                self.tweet_status(new_status = txt, reply_to = tweet.id)
+                        else:
+                            # tweet es una respuesta directa a uno mio
+                            # responde a una publicacion
+                            print("------------in-reply-------------")
+                            print("FROM: " + tweet.user.screen_name)
+                            print("TEXT: " + tweet.text)
+                            print("ANSWER: " + txt)
+                            print("---------------------------------")
+                            ## BANNER MAKER V1.1
+                            check_vs = split_users_vs(tweet.text)
+                            if check_vs:
+                                users_img_urls = [self.get_user_photo(u) for u in check_vs]
+                                img = BannerMaker.get_banner_by_urls(users_img_urls)
+                                if img:
+                                    self.tweet_status(new_status = '', img_path = img, reply_to = tweet.id)
+                            else:
+                                self.tweet_status(new_status = txt, reply_to = tweet.id)
+                elif self._my_user_id in [x['id'] for x in tweet.entities['user_mentions']]:
+                    # si menciona de onda en respuesta a otro
+                    # presentarse
+                    print("------------in-mention------------")
+                    print("FROM: " + tweet.user.screen_name)
+                    print("TEXT: " + tweet.text)
+                    print("ANSWER: " + presentation)
+                    print("---------------------------------")
+                    ## BANNER MAKER V1.1
+                    check_vs = split_users_vs(tweet.text)
+                    if check_vs:
+                        users_img_urls = [self.get_user_photo(u) for u in check_vs]
+                        img = BannerMaker.get_banner_by_urls(users_img_urls)
+                        if img:
+                            self.tweet_status(new_status = '', img_path = img, reply_to = tweet.id)
+                    else:
+                        self.tweet_status(new_status = presentation, reply_to = tweet.id)
+            except Exception as e:
+                print(str(e))
+                continue
+        self._last_mention_id = new_id
 
 def split_users_vs(msg: str) -> List[str]:
     result = re.findall("@\w*\s+vs.?\s+@\w*", msg)
@@ -128,92 +218,3 @@ def split_users_vs(msg: str) -> List[str]:
         users = re.split("\s+vs.?\s+" , result[0])
     
     return users
-
-
-# def check_mentions(self):
-    #     presentation = "Hola 👋, mi nombre es FutBot🤖 y te recuerdo los partidos \n\nSeguime y activa las notificaciones🔔"
-    #     follow = " seguime y"
-    #     notification = " activa las notificaciones🔔 para enterarte de cada partido ⚽"
-        
-    #     new_id = self._last_mention_id
-    #     for tweet in tweepy.Cursor(self._api_connection.mentions_timeline, since_id = self._last_mention_id).items():
-    #         new_id = max(tweet.id, new_id)
-    #         if self._last_mention_id == 1:
-    #             break
-    #         if tweet.user.id == self._my_user_id:
-    #             continue
-    #         try:
-    #             txt = ""
-    #             if tweet.in_reply_to_user_id  == self._my_user_id:
-    #                 # fijarse si ya respondi el anterior
-    #                 if not tweet.in_reply_to_status_id_str:
-    #                     # es None, creó un nuevo tweet mencionando
-    #                     print("------------in-reply-------------")
-    #                     print("FROM: " + tweet.user.screen_name)
-    #                     print("TEXT: " + tweet.text)
-    #                     print("ANSWER: " + presentation)
-    #                     print("---------------------------------")
-    #                     ## BANNER MAKER V1.1
-    #                     check_vs = split_users_vs(tweet.text)
-    #                     if check_vs:
-    #                         users_img_urls = [self.get_user_photo(u) for u in check_vs]
-    #                         img = self.api_sports.get_banner_by_urls(users_img_urls)
-    #                         if img:
-    #                             self.tweet_status(new_status = '', img_path = img, reply_to = tweet.id)
-    #                     else:
-    #                         self.tweet_status(new_status = presentation, reply_to = tweet.id)
-    #                 else:
-    #                     my_tweet = self._api_connection.get_status(tweet.in_reply_to_status_id_str)
-    #                     # if ERROR tweet deleted
-    #                     txt = "Hola @{},".format(tweet.user.screen_name)
-    #                     if not self._api_connection.lookup_friendships([tweet.user.id])[0].is_followed_by:
-    #                         txt += follow
-    #                     txt += notification
-    #                     if my_tweet.in_reply_to_status_id_str:
-    #                         # si my_tweet es una respuesta
-    #                         if my_tweet.in_reply_to_user_id_str != tweet.user.id_str:
-    #                             # si my_tweet no respondio al mismo usuario
-    #                             print("------------in-replynfslnfsdo-------------")
-    #                             print("FROM: " + tweet.user.screen_name)
-    #                             print("TEXT: " + tweet.text)
-    #                             print("ANSWER: " + txt)
-    #                             print("---------------------------------")
-    #                             self.tweet_status(new_status = txt, reply_to = tweet.id)
-    #                     else:
-    #                         # tweet es una respuesta directa a uno mio
-    #                         # responde a una publicacion
-    #                         print("------------in-reply-------------")
-    #                         print("FROM: " + tweet.user.screen_name)
-    #                         print("TEXT: " + tweet.text)
-    #                         print("ANSWER: " + txt)
-    #                         print("---------------------------------")
-    #                         ## BANNER MAKER V1.1
-    #                         check_vs = split_users_vs(tweet.text)
-    #                         if check_vs:
-    #                             users_img_urls = [self.get_user_photo(u) for u in check_vs]
-    #                             img = self.api_sports.get_banner_by_urls(users_img_urls)
-    #                             if img:
-    #                                 self.tweet_status(new_status = '', img_path = img, reply_to = tweet.id)
-    #                         else:
-    #                             self.tweet_status(new_status = txt, reply_to = tweet.id)
-    #             elif self._my_user_id in [x['id'] for x in tweet.entities['user_mentions']]:
-    #                 # si menciona de onda en respuesta a otro
-    #                 # presentarse
-    #                 print("------------in-mention------------")
-    #                 print("FROM: " + tweet.user.screen_name)
-    #                 print("TEXT: " + tweet.text)
-    #                 print("ANSWER: " + presentation)
-    #                 print("---------------------------------")
-    #                 ## BANNER MAKER V1.1
-    #                 check_vs = split_users_vs(tweet.text)
-    #                 if check_vs:
-    #                     users_img_urls = [self.get_user_photo(u) for u in check_vs]
-    #                     img = self.api_sports.get_banner_by_urls(users_img_urls)
-    #                     if img:
-    #                         self.tweet_status(new_status = '', img_path = img, reply_to = tweet.id)
-    #                 else:
-    #                     self.tweet_status(new_status = presentation, reply_to = tweet.id)
-    #         except Exception as e:
-    #             print(str(e))
-    #             continue
-    #     self._last_mention_id = new_id
