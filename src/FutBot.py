@@ -44,8 +44,6 @@ class FutBot:
 
         self.update_tournaments()
 
-        #self.check_mentions()
-
         self.futbot_twitter.update()
         self.futbot_instagram.update()
 
