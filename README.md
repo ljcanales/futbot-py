@@ -2,7 +2,7 @@
 [![Twitter Follow](https://img.shields.io/twitter/follow/FutBot_?style=social)](https://twitter.com/FutBot_)
 # FutBot
 
-Bot que publica partidos vía Twitter e Instagram.
+Bot que publica partidos vía [Twitter](https://twitter.com/FutBot_) e [Instagram](https://www.instagram.com/futbot__/).
 
 **TWITTER**
 - Publica los partidos del dia (por torneo).
