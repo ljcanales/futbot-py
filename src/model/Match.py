@@ -1,10 +1,10 @@
 ''' Match Module '''
 
-from src.model.Tournament import Tournament
+
 
 class Match():
     def __init__(self, tournament, time, equipo1, equipo2, tv):
-        self.tournament: Tournament = tournament
+        self.tournament = tournament
         self.time = time
         self.equipo1 = equipo1
         self.equipo2 = equipo2
