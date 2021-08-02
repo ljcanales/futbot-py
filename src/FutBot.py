@@ -34,7 +34,7 @@ class FutBot:
         self.banner_maker = BannerMaker(constants.uri.API_TEAMS)
 
         self.tour_ids = constants.tour_ids
-        self.tournaments = []
+        self.tournaments: List[Tournament] = []
 
     def update_bot(self) -> None:
         ''' Handle bot update functions '''
@@ -77,7 +77,7 @@ class FutBot:
 
         else:
             alert_time =  get_actual_datetime() + datetime.timedelta(hours = 1)
-            matches_tweeted = []
+            matches_tweeted: List[Match] = []
             for tour in self.tournaments:
                 if tour and tour.matches:
                     for match in tour.matches[:]:

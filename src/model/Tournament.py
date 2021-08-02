@@ -1,6 +1,8 @@
 ''' Tournament Module '''
 
 import datetime
+from typing import List
+from src.model.Match import Match
 
 TIME_ZONE = datetime.timezone(datetime.timedelta(hours=-3)) #Argentina UTC-3
 WEEK_DAYS = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
@@ -12,7 +14,7 @@ class Tournament():
         self.id = id
         self.name = ""
         self.date = ""
-        self.matches = []
+        self.matches: List[Match] = []
         self.day_name = ""
         self.tweet_id = ""
     
