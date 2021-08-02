@@ -1,8 +1,7 @@
 ''' FutBot Module '''
 
-import os, datetime, json, re
+import datetime
 from typing import List
-from instagrapi import Client
 from src.FutBotSocial.FutBotInstagram import FutBotInstagram
 from src.BannerMaker import BannerMaker
 from src.FutBotSocial.FutBotTwitter import FutBotTwitter
