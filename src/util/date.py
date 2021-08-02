@@ -1,9 +1,11 @@
-import datetime
-from src.constants import time
+from datetime import (datetime, timedelta, timezone)
 
-TIME_ZONE = datetime.timezone(datetime.timedelta(hours=-3)) #Argentina UTC-3
+TIME_ZONE = timezone(timedelta(hours=-3)) #Argentina UTC-3
 
-def get_actual_datetime() -> datetime.datetime:
+def get_actual_datetime() -> datetime:
     ''' Returns actual datetime by TIME_ZONE '''
 
-    return datetime.datetime.now().astimezone(time.TIME_ZONE)
+    return datetime.now().astimezone(TIME_ZONE)
+
+def string_to_datetime(date_string: str, format_string: str) -> datetime:
+    return datetime.strptime(date_string, format_string).astimezone(TIME_ZONE)
