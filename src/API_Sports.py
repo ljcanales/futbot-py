@@ -1,9 +1,9 @@
 ''' API_Sports Module '''
 
-import requests, re
-from src.model.Tournament import Tournament
-from src.model.Match import Match
-from src.util.date import get_actual_datetime
+import requests
+from .extractors import extract_tournament
+from .util.date import get_actual_datetime
+from .types import Tournament
 
 class API_Sports():
     api_url = None
@@ -23,32 +23,17 @@ class API_Sports():
 
     def get_tour_by_id(self, id_event: str) -> Tournament:
         print('\n[API_Sports] Getting tour (id = {})'.format(id_event))
-        tour = Tournament(id_event)
+        tour = None
         try:
             if self.res and self.res['fechas'] and self.res['fechas'][0]:
-                d = self.res['fechas'][0]['fecha'].split('-')
-                tour.set_date('{}-{}-{}'.format(d[2], d[1], d[0]))
-
-                matches = []
                 for t in self.res['fechas'][0]['torneos']:
                     if t['id'] == id_event:
-                        tour.set_name(t['nombre'])
-                        for e in t['eventos']:
-                            mat_time = e['fecha'][11:][:5]
-                            equipos = re.split('(?:\s*[\w|\s]*final[\w|\s]*[:|-]{1}\s+)|(?:\s*vs.?\s*)|(?:\s*-\s*)|(?:\s*\([\w|\s]*final[\w|\s]*\)\s*)', e['nombre'])
-                            equipos = [x for x in equipos if x != '']
-                            mat_tv = []
-                            for c in e['canales']:
-                                mat_tv.append(c['nombre'])
-                            match = Match(tour, mat_time, equipos[0], equipos[1], mat_tv)
-                            matches.append(match)
+                        tour = extract_tournament(t)
+                        print('[API_Sports]  --  name: {}'.format(tour.name))
+                        print('[API_Sports]  --  matches: {}\n'.format(len(tour.matches)))
                         break
-                tour.set_matches(matches)
-                print('[API_Sports]  --  name: {}'.format(tour.name))
-                print('[API_Sports]  --  matches: {}\n'.format(len(tour.matches)))
         except Exception as e:
             print("ERROR: API_Sports.get_by_id()", e)
-            tour = None
         return tour
 
     def update_info(self) -> None:
