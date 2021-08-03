@@ -1,5 +1,5 @@
 from typing import Dict, List
-from src.model.Match import Match
+from .types import Match
 from PIL import Image, ImageDraw, ImageFont
 from textwrap import wrap
 from requests import get
@@ -8,14 +8,14 @@ class BannerMaker:
     def __init__(self, url_teams: str):
         self._url_teams = url_teams
 
-    def get_banners(self, ids: List[str], match: Match) -> Dict[str, str]:
+    def get_banners(self, match: Match) -> Dict[str, str]:
         img_paths = {'horizontal': '', 'vertical': ''}
         try:
-            if not ids[0] or not ids[1] or not type(ids[0])==str or not type(ids[1])==str:
+            if not match.team_1.team_id or not match.team_2.team_id:
                 raise Exception("IDs not specified or not str type")
             
-            image1 = self.get_team_badge(ids[0])
-            image2 = self.get_team_badge(ids[1])
+            image1 = self.get_team_badge(match.team_1.team_id)
+            image2 = self.get_team_badge(match.team_2.team_id)
 
             img_paths['horizontal'] = self.get_horizontal_banner(image1, image2)
             img_paths['vertical'] = self.get_vertical_banner(image1, image2, match)
