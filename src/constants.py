@@ -26,7 +26,7 @@ class time:
 
 tour_ids = [
     '1346', # LPA
-    '3',    # CP
+    '3',    # CL
     '1324', # CA
-    '441'   # EC
+    '14'    # CARG
 ]

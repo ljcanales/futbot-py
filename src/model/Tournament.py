@@ -1,6 +1,8 @@
 ''' Tournament Module '''
 
 import datetime
+from typing import List
+
 
 TIME_ZONE = datetime.timezone(datetime.timedelta(hours=-3)) #Argentina UTC-3
 WEEK_DAYS = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
