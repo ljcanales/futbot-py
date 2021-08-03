@@ -5,15 +5,14 @@ from typing import List
 from src.FutBotSocial.FutBotInstagram import FutBotInstagram
 from src.BannerMaker import BannerMaker
 from src.FutBotSocial.FutBotTwitter import FutBotTwitter
-import src.util.files as fs
-import src.util.metrics as metrics
+from src.util import files as fs, metrics, text
 from src.util.date import get_actual_datetime
 import src.constants as constants # keys, paths, uri, etc
 from src.util.config import Config
 
 # TOURNAMENTS CONTROL MODULES
-from src.model.Match import Match
-from src.model.Tournament import Tournament
+from src.types import Match
+from src.types import Tournament
 from src.API_Sports import API_Sports
 
 #sleeping time
@@ -68,7 +67,7 @@ class FutBot:
                 for tour in self.tournaments:
                     try:
                         if tour and tour.matches:
-                            tour.tweet_id = self.futbot_twitter.tweet_status_lst(tour.print_tournament())
+                            tour.tweet_id = self.futbot_twitter.tweet_status_lst(text.tour_to_text.full_info_lst(tour))
                             tours_tweeted += 1
                             print("[TW] Publicando partidos del dia - " + tour.name)
                     except Exception as exception:
@@ -81,19 +80,15 @@ class FutBot:
             for tour in self.tournaments:
                 if tour and tour.matches:
                     for match in tour.matches[:]:
-                        time_lst = match.time.split(':')
-                        match_time = get_actual_datetime().replace(hour = int(time_lst[0]), minute = int(time_lst[1]))
-
-                        if match_time > alert_time:
+                        if match.time > alert_time:
                             break
                         tour.matches.remove(match)
                         try:
-                            print('\n[FutBot] Publicando partido -- {} vs {} --'.format(match.equipo1, match.equipo2))
-                            match_text = match.print_match()
-                            json_keys = [x.replace(" ", "") for x in match.get_equipos()]
-                            match_text += self.futbot_twitter.get_screen_names(json_keys)
+                            print('\n[FutBot] Publicando partido -- {} vs {} --'.format(match.team_1.name, match.team_2.name))
+                            match_text = text.match_to_text.full_info(match)
+                            match_text += self.futbot_twitter.get_screen_names([match.team_1.account_id, match.team_2.account_id])
 
-                            banners = self.banner_maker.get_banners(get_team_ids(json_keys), match)
+                            banners = self.banner_maker.get_banners(match)
 
                             if self.config.is_activated('tweet_match') and banners:
                                 match.tweet_id = self.futbot_twitter.tweet_status(match_text, banners['horizontal'])
