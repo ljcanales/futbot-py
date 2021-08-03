@@ -12,10 +12,11 @@ def extract_teams(data) -> List[Team]:
     teams: List[Team] = []
     teams_info = read_json_file(file_path.CLUB_INFO)
     for name in data:
-        team_data = {}
+        team_data = {'name': name}
+        name = name.replace(' ', '')
         if name in teams_info.keys():
-            team_data = teams_info[name]
-        teams.append(Team(name=name, **team_data))
+            team_data.update(teams_info[name])
+        teams.append(Team(**team_data))
     return teams
 
 def extract_match(data) -> Match:
