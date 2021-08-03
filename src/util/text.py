@@ -40,7 +40,7 @@ class match_to_text:
 
 class tour_to_text:
     @staticmethod
-    def full_info(tour: Tournament) -> List[str]:
+    def full_info_lst(tour: Tournament) -> List[str]:
         index = 0
         tt = [""]
         hashtag = ""
