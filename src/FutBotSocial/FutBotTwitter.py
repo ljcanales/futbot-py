@@ -90,19 +90,16 @@ class FutBotTwitter:
         finally:
             metrics.increase_metric(metrics.SENT_MATCHES, sent_messages)
     
-    def get_screen_names(self, keys_list: List[str]) -> str:
+    def get_screen_names(self, account_id_list: List[str]) -> str:
         ''' Returns string containing sreen_names for each key in list given by parameter '''
 
-        res = ""
+        res = ''
         try:
-            data = fs.read_json_file(constants.file_path.CLUB_INFO)
-            if data:
-                for key in keys_list:
-                    if key in data.keys() and data[key]['account_id']:
-                        res += '@' + self._api_connection.get_user(data[key]['account_id']).screen_name + ' '
+            for account_id in account_id_list:
+                if account_id:
+                    res += '@' + self._api_connection.get_user(account_id).screen_name + ' '
         except Exception as exception:
             print("ERROR: get_screen_names() - e=" + str(exception))
-            res = ""
         return res
     
     def get_last_tweet_date(self):
