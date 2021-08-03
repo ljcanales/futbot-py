@@ -2,7 +2,7 @@ import re
 from typing import List
 from tweepy import OAuthHandler
 import tweepy
-from src.model.Match import Match
+from src.types import Match
 from src.BannerMaker import BannerMaker
 import src.constants as constants
 import src.util.files as fs
