@@ -1,6 +1,7 @@
 from datetime import (datetime, timedelta, timezone)
 
 TIME_ZONE = timezone(timedelta(hours=-3)) #Argentina UTC-3
+WEEK_DAYS = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
 
 def get_actual_datetime() -> datetime:
     ''' Returns actual datetime by TIME_ZONE '''
