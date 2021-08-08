@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import List, Optional
 from pydantic.main import BaseModel
+from abc import ABCMeta, abstractmethod
 
 class Team(BaseModel):
     name: str
@@ -22,3 +23,8 @@ class Tournament(BaseModel):
     date: datetime
     matches: List[Match]
     tweet_id: Optional[str]
+
+class BotModel(metaclass=ABCMeta):
+    @abstractmethod
+    def update(self):
+        pass
