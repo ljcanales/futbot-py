@@ -2,7 +2,7 @@ from typing import List
 from src.types import Match, Tournament
 from src.util.date import WEEK_DAYS
 
-HASTAGS_BY_ID = {'3' : ['#Libertadores', '#CopaLibertadores'], '1276' : ['#CopaDeLaLiga'], '1324' : ['#CopaAmerica', '@CopaAmerica'], '441' : ['#EURO2020', '@EURO2020']}
+HASTAGS_BY_ID = {'3' : ['#Libertadores', '#CopaLibertadores'], '1276' : ['#CopaDeLaLiga'], '1324' : ['#CopaAmerica', '@CopaAmerica'], '441' : ['#EURO2020', '@EURO2020'], '1346' : ['#LPFA', '#LigaProfesional'], '14' : ['#CopaArgentina']}
 
 class match_to_text:
     @staticmethod
