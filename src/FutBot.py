@@ -6,10 +6,10 @@ from src.BannerMaker import BannerMaker
 from src.util import files as fs, metrics, text
 from src.util.date import get_actual_datetime
 import src.constants as constants # keys, paths, uri, etc
-from src.util.config import Config
 
 # mixins
 from src.mixins.social import FutBotInstagramMixin, FutBotTwitterMixin
+from src.mixins.config import ConfigMixin
 
 # TOURNAMENTS CONTROL MODULES
 from src.types import Match, Tournament
@@ -20,13 +20,13 @@ SLEEP_TIME = 300
 
 class FutBot(
     FutBotTwitterMixin,
-    FutBotInstagramMixin
+    FutBotInstagramMixin,
+    ConfigMixin
 ):
     ''' FutBot class - manage bot behavior '''
 
     def __init__(self):
         print("\n\n[FutBot] STARTING... - " + str(get_actual_datetime()))
-        self.config = Config(constants.file_path.CONFIG)
 
         # tournaments info
         self.api_sports = API_Sports(constants.uri.API_MATCHES)
@@ -38,13 +38,12 @@ class FutBot(
 
     def update(self) -> None:
         ''' Handle bot update functions '''
-
-        self.config.update_config()
+        
+        self.update_config()
 
         self.update_tournaments()
 
         super().update()
-
         print("- Update Flag at {}".format(str(get_actual_datetime())))
     
     def update_tournaments(self) -> None:
@@ -90,17 +89,17 @@ class FutBot(
 
                             banners = self.banner_maker.get_banners(match)
 
-                            if self.config.is_activated('tweet_match') and banners:
+                            if self._config.tweet_match and banners:
                                 match.tweet_id = self.tw_tweet_status(match_text, banners['horizontal'])
                                 matches_tweeted.append(match)
-                            if self.config.is_activated('post_story_match') and banners:
+                            if self._config.post_story_match and banners:
                                 self.ig_post_story(banners['vertical'])
                         except Exception as e:
                             print("ERROR: update_tournaments()-(2) e=", e)
 
             if matches_tweeted:
                 metrics.increase_metric(metrics.TWEETED_MATCHES, len(matches_tweeted))
-                if self.config.is_activated('send_match_message'):
+                if self._config.send_match_message:
                     self.tw_send_match_messages(matches_tweeted)
 
 def get_team_ids(keys_list: List[str]) -> List[str]:
