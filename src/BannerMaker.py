@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict, List, Tuple
 from .types import Match
 from PIL import Image, ImageDraw, ImageFont
 from textwrap import wrap
@@ -62,7 +62,7 @@ class BannerMaker:
             width_final = final_img.width
             height_final = final_img.height
             
-            txt = GenerateText((width_final,height_final), 'white', match)
+            txt = GenerateText((width_final, height_final), 'white', match)
             final_img.paste(image1, (int((width_final / 2 - image1.width) / 3), int((height_final - image1.height)/2)), image1)
             final_img.paste(image2, (int((width_final / 2 + (width_final / 2 - image2.width) * 2 / 3)), int((height_final - image1.height)/2)), image2)
             final_img.paste(txt,(0,0),txt)            
@@ -122,7 +122,7 @@ class BannerMaker:
         return None
     
 
-def GenerateText(size, fg, match):
+def GenerateText(size: Tuple[int,int], fg: str, match: Match):
     """Generate a piece of canvas and draw text on it"""
     h_acc = 200
     canvas = Image.new('RGBA', size, (0,0,0,0))
