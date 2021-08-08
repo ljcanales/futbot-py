@@ -26,7 +26,7 @@ class FutBot(
     ''' FutBot class - manage bot behavior '''
 
     def __init__(self):
-        print("\n\n[FutBot] STARTING... - " + str(get_actual_datetime()))
+        print("\n\n[FutBot] STARTING... - " + str(get_actual_datetime().strftime('%d-%m-%Y %H:%M:%S')))
 
         # tournaments info
         self.api_sports = API_Sports(constants.uri.API_MATCHES)
@@ -44,7 +44,7 @@ class FutBot(
         self.update_tournaments()
 
         super().update()
-        print("- Update Flag at {}".format(str(get_actual_datetime())))
+        print("- Update Flag at {}".format(get_actual_datetime().strftime('%d-%m-%Y %H:%M:%S')))
     
     def update_tournaments(self) -> None:
         ''' Handle tournaments information '''
