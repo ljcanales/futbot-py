@@ -24,6 +24,12 @@ class Tournament(BaseModel):
     matches: List[Match]
     tweet_id: Optional[str]
 
+class ConfigData(BaseModel):
+    send_match_message: bool = False
+    tweet_match: bool = False
+    post_story_match: bool = False
+    update_config: bool = True
+
 class BotModel(metaclass=ABCMeta):
     @abstractmethod
     def update(self):
