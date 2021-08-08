@@ -1,11 +1,9 @@
-import os
+import os, re
 from instagrapi import Client
 from tweepy import OAuthHandler
 import tweepy
 import src.util.metrics as metrics
-from src.constants import file_path, ig_keys
-import src.constants as constants
-import re
+from src.constants import file_path, ig_keys, tw_keys, time
 
 from typing import List
 from src.types import Match, BotModel
@@ -81,8 +79,8 @@ class FutBotTwitterMixin(BotModel):
         print('[TW] Connecting...')
         try:
             #authentication
-            auth = OAuthHandler(constants.tw_keys.API_KEY, constants.tw_keys.API_SECRET)
-            auth.set_access_token(constants.tw_keys.ACCESS_KEY, constants.tw_keys.ACCESS_SECRET)
+            auth = OAuthHandler(tw_keys.API_KEY, tw_keys.API_SECRET)
+            auth.set_access_token(tw_keys.ACCESS_KEY, tw_keys.ACCESS_SECRET)
             self._api_connection = tweepy.API(auth, wait_on_rate_limit = True, wait_on_rate_limit_notify = True)
             self._my_user_id = self._api_connection.me().id
             print('[TW] Connected')
@@ -128,7 +126,7 @@ class FutBotTwitterMixin(BotModel):
     def tw_send_match_messages(self, matches: List[Match]) -> None:
         ''' Sends match info to every follower '''
 
-        templates = fs.read_json_file(constants.file_path.TEXT_TEMPLATES)
+        templates = fs.read_json_file(file_path.TEXT_TEMPLATES)
         cant_templates = 0
 
         if templates and len(templates['match_message']) > 0:
@@ -172,7 +170,7 @@ class FutBotTwitterMixin(BotModel):
 
         try:
             last_status = self._api_connection.user_timeline(id=self._my_user_id, count=1, exclude_replies=True, exclude_rts=True,)[0]
-            return last_status.created_at.astimezone(constants.time.TIME_ZONE).date()
+            return last_status.created_at.astimezone(time.TIME_ZONE).date()
         except Exception as exception:
             raise Exception("ERROR: get_last_datetime() - e=" + str(exception)) from exception
 
