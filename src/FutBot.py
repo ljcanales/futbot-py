@@ -101,18 +101,3 @@ class FutBot(
                 metrics.increase_metric(metrics.TWEETED_MATCHES, len(matches_tweeted))
                 if self._config.send_match_message:
                     self.tw_send_match_messages(matches_tweeted)
-
-def get_team_ids(keys_list: List[str]) -> List[str]:
-        ''' Returns list containing team_ids for each key in list given by parameter '''
-
-        res = []
-        try:
-            data = fs.read_json_file(constants.file_path.CLUB_INFO)
-            if data:
-                for key in keys_list:
-                    if key in data.keys() and data[key]['team_id']:
-                        res.append(data[key]['team_id'])
-        except Exception as exception:
-            print("ERROR: get_teams_ids() - e=" + str(exception))
-            res = []
-        return res
