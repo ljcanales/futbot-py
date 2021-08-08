@@ -26,9 +26,9 @@ class API_Sports():
         tour = None
         try:
             if self.res and self.res['fechas'] and self.res['fechas'][0]:
-                for t in self.res['fechas'][0]['torneos']:
-                    if t['id'] == id_event:
-                        tour = extract_tournament(t)
+                for tour_data in self.res['fechas'][0]['torneos']:
+                    if tour_data['id'] == id_event:
+                        tour = extract_tournament(tour_data)
                         print('[API_Sports]  --  name: {}'.format(tour.name))
                         print('[API_Sports]  --  matches: {}\n'.format(len(tour.matches)))
                         break
