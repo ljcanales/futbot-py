@@ -22,7 +22,7 @@ class API_Sports():
             print("ERROR: API_Sports.init() - e: ", str(exception))
 
     def get_tour_by_id(self, id_event: str) -> Tournament:
-        print('\n[API_Sports] Getting tour (id = {})'.format(id_event))
+        print('[API_Sports] Getting tour (id = {})'.format(id_event))
         tour = None
         try:
             if self.res and self.res['fechas'] and self.res['fechas'][0]:
@@ -30,7 +30,7 @@ class API_Sports():
                     if tour_data['id'] == id_event:
                         tour = extract_tournament(tour_data)
                         print('[API_Sports]  --  name: {}'.format(tour.name))
-                        print('[API_Sports]  --  matches: {}\n'.format(len(tour.matches)))
+                        print('[API_Sports]  --  matches: {}'.format(len(tour.matches)))
                         break
         except Exception as e:
             print("ERROR: API_Sports.get_by_id()", e)
