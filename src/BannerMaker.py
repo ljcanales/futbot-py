@@ -3,6 +3,7 @@ from .types import Match
 from PIL import Image, ImageDraw, ImageFont
 from textwrap import wrap
 from requests import get
+from src.util.date import WEEK_DAYS
 
 class BannerMaker:
     def __init__(self, url_teams: str):
@@ -135,27 +136,27 @@ def GenerateText(size: Tuple[int,int], fg: str, match: Match):
     font_vs = ImageFont.truetype('./fonts/Roboto-Black.ttf', 70)
     font_info = ImageFont.truetype('./fonts/Roboto-Light.ttf', 50)
 
-    w_text, h_text = draw.textsize(match.equipo1, font=font_equipos)
-    draw.text(((width-w_text)/2, h_acc), match.equipo1, fg, font=font_equipos)
+    w_text, h_text = draw.textsize(match.team_1, font=font_equipos)
+    draw.text(((width-w_text)/2, h_acc), match.team_1, fg, font=font_equipos)
     h_acc = h_acc + h_text + 60
 
     w_text, h_text = draw.textsize('vs', font=font_vs)
     draw.text(((width-w_text)/2, h_acc), 'vs', fg, font=font_vs)
     h_acc = h_acc + h_text + 60
 
-    w_text, h_text = draw.textsize(match.equipo2, font=font_equipos)
-    draw.text(((width-w_text)/2, h_acc), match.equipo2, fg, font=font_equipos)
+    w_text, h_text = draw.textsize(match.team_2, font=font_equipos)
+    draw.text(((width-w_text)/2, h_acc), match.team_2, fg, font=font_equipos)
 
     # Info text
     h_acc = int(height * 2 / 3)
 
-    date_txt = 'Día: {} {}'.format(match.tournament.day_name, match.tournament.date.replace('-','/'))
+    date_txt = 'Día: {} {}'.format(WEEK_DAYS[match.time.weekday()], match.time.strftime('%d/%m/%Y'))
     w_text, h_text = draw.textsize(date_txt, font=font_info)
     draw.text((20, h_acc), date_txt, fg, font=font_info)
     h_acc = h_acc + h_text + 60
 
-    w_text, h_text = draw.textsize('Hora: {}'.format(match.time), font=font_info)
-    draw.text((20, h_acc), 'Hora: {}'.format(match.time), fg, font=font_info)
+    w_text, h_text = draw.textsize('Hora: {}'.format(match.time.strftime('%H:%M')), font=font_info)
+    draw.text((20, h_acc), 'Hora: {}'.format(match.time.strftime('%H:%M')), fg, font=font_info)
     h_acc = h_acc + h_text + 60
 
     tv_text = wrap('TV: ' + ' - '.join(match.tv), 40)
