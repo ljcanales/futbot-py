@@ -16,7 +16,7 @@ class FutBotInstagramMixin(BotModel):
 
     def __init__(self):
         self.ig_login()
-        super.__init__()
+        super().__init__()
         pass
 
     def update(self):
@@ -86,7 +86,7 @@ class FutBotTwitterMixin(BotModel):
             print('[TW] Connected')
         except BaseException as exception:
             print("Error in FutBotTwitter.__init__()", str(exception))
-        super.__init__()
+        super().__init__()
     
     def update(self) -> None:
         #self.__tw_check_mentions()
@@ -273,8 +273,6 @@ class FutBotTwitterMixin(BotModel):
 def split_users_vs(msg: str) -> List[str]:
     result = re.findall("@\w*\s+vs.?\s+@\w*", msg)
     users = []
-    
     if result:
         users = re.split("\s+vs.?\s+" , result[0])
-    
     return users

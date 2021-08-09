@@ -34,7 +34,7 @@ class FutBot(
 
         self.tour_ids = constants.tour_ids
         self.tournaments: List[Tournament] = []
-        super.__init__()
+        super().__init__()
 
     def update(self) -> None:
         ''' Handle bot update functions '''
