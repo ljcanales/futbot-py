@@ -16,7 +16,7 @@ class ConfigMixin():
             return ConfigData(**data)
         else:
             default_config: ConfigData = ConfigData()
-            write_json_file(default_config, file_path.CONFIG)
+            write_json_file(default_config.dict(), file_path.CONFIG)
             print('[CONFIG] New config file created')
             return default_config
     
