@@ -136,16 +136,16 @@ def GenerateText(size: Tuple[int,int], fg: str, match: Match):
     font_vs = ImageFont.truetype('./fonts/Roboto-Black.ttf', 70)
     font_info = ImageFont.truetype('./fonts/Roboto-Light.ttf', 50)
 
-    w_text, h_text = draw.textsize(match.team_1, font=font_equipos)
-    draw.text(((width-w_text)/2, h_acc), match.team_1, fg, font=font_equipos)
+    w_text, h_text = draw.textsize(match.team_1.name, font=font_equipos)
+    draw.text(((width-w_text)/2, h_acc), match.team_1.name, fg, font=font_equipos)
     h_acc = h_acc + h_text + 60
 
     w_text, h_text = draw.textsize('vs', font=font_vs)
     draw.text(((width-w_text)/2, h_acc), 'vs', fg, font=font_vs)
     h_acc = h_acc + h_text + 60
 
-    w_text, h_text = draw.textsize(match.team_2, font=font_equipos)
-    draw.text(((width-w_text)/2, h_acc), match.team_2, fg, font=font_equipos)
+    w_text, h_text = draw.textsize(match.team_2.name, font=font_equipos)
+    draw.text(((width-w_text)/2, h_acc), match.team_2.name, fg, font=font_equipos)
 
     # Info text
     h_acc = int(height * 2 / 3)
