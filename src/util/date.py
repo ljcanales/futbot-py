@@ -9,4 +9,4 @@ def get_actual_datetime() -> datetime:
     return datetime.now().astimezone(TIME_ZONE)
 
 def string_to_datetime(date_string: str, format_string: str) -> datetime:
-    return datetime.strptime(date_string, format_string).astimezone(TIME_ZONE)
+    return datetime.strptime(date_string, format_string).replace(tzinfo=TIME_ZONE)
