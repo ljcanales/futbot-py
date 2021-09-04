@@ -198,14 +198,9 @@ class FutBotTwitterMixin(BotModel):
             try:
                 txt = ""
                 if tweet.in_reply_to_user_id  == self._my_user_id:
-                    # fijarse si ya respondi el anterior
+                    # check if already answered
                     if not tweet.in_reply_to_status_id_str:
-                        # es None, creó un nuevo tweet mencionando
-                        print("------------in-reply-------------")
-                        print("FROM: " + tweet.user.screen_name)
-                        print("TEXT: " + tweet.text)
-                        print("ANSWER: " + presentation)
-                        print("---------------------------------")
+                        # it's a new tweet with mention
                         ## BANNER MAKER V1.1
                         check_vs = split_users_vs(tweet.text)
                         if check_vs:
@@ -216,30 +211,16 @@ class FutBotTwitterMixin(BotModel):
                         else:
                             self.tw_tweet_status(new_status = presentation, reply_to = tweet.id)
                     else:
-                        my_tweet = self._api_connection.get_status(tweet.in_reply_to_status_id_str)
-                        # if ERROR tweet deleted
+                        my_tweet = self._api_connection.get_status(tweet.in_reply_to_status_id_str) # if this raise Exception, it's a deleted tweet
                         txt = "Hola @{},".format(tweet.user.screen_name)
                         if not self._api_connection.lookup_friendships([tweet.user.id])[0].is_followed_by:
                             txt += follow
                         txt += notification
-                        if my_tweet.in_reply_to_status_id_str:
-                            # si my_tweet es una respuesta
-                            if my_tweet.in_reply_to_user_id_str != tweet.user.id_str:
-                                # si my_tweet no respondio al mismo usuario
-                                print("------------in-replynfslnfsdo-------------")
-                                print("FROM: " + tweet.user.screen_name)
-                                print("TEXT: " + tweet.text)
-                                print("ANSWER: " + txt)
-                                print("---------------------------------")
+                        if my_tweet.in_reply_to_status_id_str: # if my_tweet is a reply
+                            if my_tweet.in_reply_to_user_id_str != tweet.user.id_str: # if my_tweet not replying same user
                                 self.tw_tweet_status(new_status = txt, reply_to = tweet.id)
                         else:
-                            # tweet es una respuesta directa a uno mio
-                            # responde a una publicacion
-                            print("------------in-reply-------------")
-                            print("FROM: " + tweet.user.screen_name)
-                            print("TEXT: " + tweet.text)
-                            print("ANSWER: " + txt)
-                            print("---------------------------------")
+                            # tweet is replying bot tweet directly
                             ## BANNER MAKER V1.1
                             check_vs = split_users_vs(tweet.text)
                             if check_vs:
@@ -250,13 +231,7 @@ class FutBotTwitterMixin(BotModel):
                             else:
                                 self.tw_tweet_status(new_status = txt, reply_to = tweet.id)
                 elif self._my_user_id in [x['id'] for x in tweet.entities['user_mentions']]:
-                    # si menciona de onda en respuesta a otro
-                    # presentarse
-                    print("------------in-mention------------")
-                    print("FROM: " + tweet.user.screen_name)
-                    print("TEXT: " + tweet.text)
-                    print("ANSWER: " + presentation)
-                    print("---------------------------------")
+                    # if mention
                     ## BANNER MAKER V1.1
                     check_vs = split_users_vs(tweet.text)
                     if check_vs:
