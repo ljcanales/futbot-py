@@ -122,6 +122,23 @@
 	},
 
 
+	"Flamengo": {
+		"account_id": "",
+		"team_id": "134287"
+	},
+	"Olimpia": {
+		"account_id": "",
+		"team_id": "138296"
+	},
+	"Palmeiras": {
+		"account_id": "",
+		"team_id": "134465"
+	},
+	"Atl\u00e9ticoMineiro": {
+		"account_id": "",
+		"team_id": "134299"
+	},
+
 	"Argentina": {
 		"account_id": "2495199115",
 		"team_id": "134509"
