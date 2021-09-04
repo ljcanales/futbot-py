@@ -12,7 +12,7 @@ Bot that posts matches via Twitter [Twitter](https://twitter.com/FutBot_) and [I
 **INSTAGRAM**
 - Posts match (Instagram Story).
 
-# Instalación
+# Installation
 Clone repository.
 ```
 git clone https://github.com/ljcanales/futbot-py && cd futbot-py
@@ -57,5 +57,3 @@ Edit file `config_file.json` (true/false):
 
 - Twitter: [@FutBot_](https://twitter.com/FutBot_)
 - Instagram: [@futbot__](https://www.instagram.com/futbot__/)
-
-
