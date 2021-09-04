@@ -2,36 +2,35 @@
 [![Twitter Follow](https://img.shields.io/twitter/follow/FutBot_?style=social)](https://twitter.com/FutBot_)
 # FutBot
 
-Bot que publica partidos vía [Twitter](https://twitter.com/FutBot_) e [Instagram](https://www.instagram.com/futbot__/).
+Bot that posts matches via Twitter [Twitter](https://twitter.com/FutBot_) and [Instagram](https://www.instagram.com/futbot__/).
 
 **TWITTER**
-- Publica los partidos del dia (por torneo).
-- Publica partido (con imagen, en caso que sea posible).
-- Recordatorio de partido a los seguidores.
+- Posts matches of the day (by tournament).
+- Posts match (with image, if possible).
+- Match reminder to followers.
 
 **INSTAGRAM**
-- Publica partido (Instagram Story).
+- Posts match (Instagram Story).
 
 # Instalación
-Clonar repositorio
+Clone repository.
 ```
-git clone https://github.com/ljcanales/futbot-py
-cd futbot-py
+git clone https://github.com/ljcanales/futbot-py && cd futbot-py
 ```
 
-(Opcional) Crear entorno virtual y activarlo
+(Optional) Create virtual environment and activate it.
 ```
 python3 -m venv env
 source env/bin/activate
 ```
 
-Instalar dependencias.
+Install dependencies.
 ```
 pip3 install -r requirements.txt
 ```
 
-# Configuración
-Variables de entorno.
+# Configuration
+Environment variables.
 ```
 export API_KEY=...
 export API_SECRET=...
@@ -43,7 +42,7 @@ export API_MATCHES=...
 export API_TEAMS=...
 ```
 
-Editar el archivo `config_file.json` (true/false):
+Edit file `config_file.json` (true/false):
 
 ```
 {
@@ -54,7 +53,7 @@ Editar el archivo `config_file.json` (true/false):
 }
 ```
 
-# Cuentas
+# Accounts
 
 - Twitter: [@FutBot_](https://twitter.com/FutBot_)
 - Instagram: [@futbot__](https://www.instagram.com/futbot__/)
