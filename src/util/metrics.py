@@ -11,9 +11,9 @@ TWITTER = 'twitter'
 INSTAGRAM = 'instagram'
 DATE_FROM = 'date_from'
 LAST_UPDATE = 'last_update'
-TWEETED_DAY_MATCHES = 'tweeted_day_matches'
+TWEETED_TOURNAMENTS = 'tweeted_tournaments'
 TWEETED_MATCHES = 'tweeted_matches'
-SENT_MATCHES = 'sent_messages'
+SENT_TWITTER_MESSAGES = 'sent_twitter_messages'
 POSTED_STORIES = 'posted_stories'
 
 def update_metric(metric_name: str, new_value: int) -> None:
@@ -105,8 +105,8 @@ def get_metric_template() -> Dict:
         str(DATE_FROM) : str(date_util.get_actual_datetime()),
         str(TWITTER) : {
             str(TWEETED_MATCHES) : 0,
-            str(TWEETED_DAY_MATCHES) : 0,
-            str(SENT_MATCHES) : 0
+            str(TWEETED_TOURNAMENTS) : 0,
+            str(SENT_TWITTER_MESSAGES) : 0
         },
         str(INSTAGRAM) : {
             str(POSTED_STORIES) : 0

@@ -24,9 +24,10 @@ class uri:
 class time:
     TIME_ZONE = timezone(timedelta(hours=-3)) #Argentina UTC-3
 
-tour_ids = [
+TOURNAMENTS_IDS = [
     '1346', # LPA
     '3',    # CL
     '1324', # CA
-    '14'    # CARG
+    '14',   # CARG
+    '1247'  # ESQ
 ]

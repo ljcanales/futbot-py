@@ -16,6 +16,7 @@ class Match(BaseModel):
     team_2: Team
     tv: List[str]
     tweet_id: Optional[str]
+    story_posted: bool = False
 
 class Tournament(BaseModel):
     id: str
@@ -23,6 +24,7 @@ class Tournament(BaseModel):
     date: datetime
     matches: List[Match]
     tweet_id: Optional[str]
+    story_posted: bool = False
 
 class ConfigData(BaseModel):
     send_match_message: bool = False

@@ -8,6 +8,7 @@ class ConfigMixin():
 
     def __init__(self):
         self._config = self.__read_config()
+        super().__init__()
     
     def __read_config(self) -> ConfigData:
         print('[CONFIG] Reading config file')

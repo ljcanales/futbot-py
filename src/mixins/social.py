@@ -1,8 +1,6 @@
 import os, re
 from instagrapi import Client
-from tweepy import OAuthHandler
 import tweepy
-import src.util.metrics as metrics
 from src.constants import file_path, ig_keys, tw_keys, time
 
 from typing import List
@@ -58,16 +56,19 @@ class FutBotInstagramMixin(BotModel):
             return True
         return False
     
-    def ig_post_story(self, path: str) -> None:
+    def ig_post_story(self, path: str) -> bool:
         try:
             if path:
                 print('[IG] Posting story...')
                 self.insta_cl.photo_upload_to_story(path, 'From FutBot')
                 print('[IG] Story posted')
+                return True
             else:
                 print('[IG] Story path not specified')
         except Exception as exception:
-            raise Exception(str(exception)) from exception
+            #raise Exception(str(exception)) from exception
+            pass
+        return False
 
 class FutBotTwitterMixin(BotModel):
     _api_connection: tweepy.API = None
@@ -79,7 +80,7 @@ class FutBotTwitterMixin(BotModel):
         print('[TW] Connecting...')
         try:
             #authentication
-            auth = OAuthHandler(tw_keys.API_KEY, tw_keys.API_SECRET)
+            auth = tweepy.OAuthHandler(tw_keys.API_KEY, tw_keys.API_SECRET)
             auth.set_access_token(tw_keys.ACCESS_KEY, tw_keys.ACCESS_SECRET)
             self._api_connection = tweepy.API(auth, wait_on_rate_limit = True, wait_on_rate_limit_notify = True)
             self._my_user_id = self._api_connection.me().id
@@ -123,7 +124,7 @@ class FutBotTwitterMixin(BotModel):
         except Exception as exception:
             raise Exception(str(exception)) from exception
 
-    def tw_send_match_messages(self, matches: List[Match]) -> None:
+    def tw_send_match_messages(self, matches: List[Match]) -> int:
         ''' Sends match info to every follower '''
 
         templates = fs.read_json_file(file_path.TEXT_TEMPLATES)
@@ -134,7 +135,7 @@ class FutBotTwitterMixin(BotModel):
             cant_templates = len(templates)
         else:
             print('Message templates not found, check text_templates.json file')
-            return None
+            return 0
         
         sent_messages = 0
         
@@ -151,7 +152,7 @@ class FutBotTwitterMixin(BotModel):
         except Exception as exception:
             print("ERROR: tw_send_match_messages() - e=" + str(exception))
         finally:
-            metrics.increase_metric(metrics.SENT_MATCHES, sent_messages)
+            return sent_messages
     
     def tw_get_screen_names(self, account_id_list: List[str]) -> str:
         ''' Returns string containing sreen_names for each key in list given by parameter '''
