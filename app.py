@@ -1,13 +1,16 @@
-from src import FutBot
-import time
+from futbot import Bot
+from time import sleep
+
+#sleeping time
+SLEEP_TIME = 300
 
 def main():
 
-    bot = FutBot.FutBot()
+    bot = Bot()
     
     while True:
         bot.update()
-        time.sleep(FutBot.SLEEP_TIME)
+        sleep(SLEEP_TIME)
 
 if __name__ == "__main__":
     main()

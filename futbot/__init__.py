@@ -10,10 +10,8 @@ from futbot.mixins.social import FutBotInstagramMixin, FutBotTwitterMixin
 from futbot.mixins.config import ConfigMixin
 from futbot.mixins.sports import SportsMixin
 
-#sleeping time
-SLEEP_TIME = 300
 
-class FutBot(
+class Bot(
     FutBotTwitterMixin,
     FutBotInstagramMixin,
     SportsMixin,
