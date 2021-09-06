@@ -1,14 +1,14 @@
 ''' FutBot Module '''
 
-from src.BannerMaker import BannerMaker
-from src.util import metrics, text
-from src.util.date import get_actual_datetime
-import src.constants as constants # keys, paths, uri, etc
+from futbot.BannerMaker import BannerMaker
+from futbot.util import metrics, text
+from futbot.util.date import get_actual_datetime
+import futbot.constants as constants # keys, paths, uri, etc
 
 # mixins
-from src.mixins.social import FutBotInstagramMixin, FutBotTwitterMixin
-from src.mixins.config import ConfigMixin
-from src.mixins.sports import SportsMixin
+from futbot.mixins.social import FutBotInstagramMixin, FutBotTwitterMixin
+from futbot.mixins.config import ConfigMixin
+from futbot.mixins.sports import SportsMixin
 
 #sleeping time
 SLEEP_TIME = 300

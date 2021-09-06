@@ -1,9 +1,9 @@
 from datetime import datetime, timedelta
-from src.extractors import extract_tournament
-from src.util.date import get_actual_datetime
+from futbot.extractors import extract_tournament
+from futbot.util.date import get_actual_datetime
 from typing import Dict, List
-from src.types import Tournament, Match, BotModel
-from src.constants import TOURNAMENTS_IDS, uri
+from futbot.types import Tournament, Match, BotModel
+from futbot.constants import TOURNAMENTS_IDS, uri
 import requests
 
 class SportsMixin(BotModel):

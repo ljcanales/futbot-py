@@ -3,7 +3,7 @@ from .types import Match
 from PIL import Image, ImageDraw, ImageFont
 from textwrap import wrap
 from requests import get
-from src.util.date import WEEK_DAYS
+from futbot.util.date import WEEK_DAYS
 
 class BannerMaker:
     def __init__(self, url_teams: str):

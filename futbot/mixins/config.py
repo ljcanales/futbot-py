@@ -1,7 +1,7 @@
 from typing import Dict
-from src.util.files import read_json_file, write_json_file
-from src.constants import file_path
-from src.types import ConfigData
+from futbot.util.files import read_json_file, write_json_file
+from futbot.constants import file_path
+from futbot.types import ConfigData
 
 class ConfigMixin():
     _config: ConfigData

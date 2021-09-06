@@ -1,13 +1,13 @@
 import os, re
 from instagrapi import Client
 import tweepy
-from src.constants import file_path, ig_keys, tw_keys, time
+from futbot.constants import file_path, ig_keys, tw_keys, time
 
 from typing import List
-from src.types import Match, BotModel
+from futbot.types import Match, BotModel
 
-from src.BannerMaker import BannerMaker
-import src.util.files as fs
+from futbot.BannerMaker import BannerMaker
+import futbot.util.files as fs
 
 class FutBotInstagramMixin(BotModel):
     insta_cl: Client = None
