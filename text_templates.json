@@ -1,13 +1,7 @@
 {
     "match_message" : [
-        "⚽ Está por empezar ⚽\n\n{} vs {}\n\n⏰ {}\n\nCon un RT y MG me ayudas mucho!",
-        "Va a comenzar! ⚽\n\n{} - {}\n\n⏰ A las {}\n\nMG❤️  RT🔄",
-        "YA ESTA POR EMPEZAR!!\n\n{} vs {}\n\nA las {}\n\nEntrá al tweet para mas info\nMG❤️  RT🔄",
-        "⚽ ESTÁ POR COMENZAR\n\n{} - {}\n\n⏰ {}\n\nCon un MG❤️ Y RT🔄 me ayudas mucho!",
-        "YA ARRANCA...!!\n\n{} vs {}\n\nComienza {}\n\nMG❤️ Y RT🔄",
-        "Cómo andas? Acordate que juegan...\n\n{} vs {}\n\nEmpieza {}\n\nCon un MG❤️ Y RT🔄 me ayudas mucho!",
-        "Todo bien? Te aviso que ya arranca ⚽\n\n{} vs {}\n\nEntrá al tweet para mas info\nMG❤️  RT🔄",
-        "Acordate que juega!\n\n{} vs {}\n\nEmpieza {}\n\nTe invito a MG❤️ Y RT🔄 el tweet!",
-        "Ya empieza {} vs {} ⚽\n\nEntrá al tweet para mas info!\nMe ayudas con MG❤️ Y RT🔄 ?"
+        "⚽ Está por empezar ⚽\n\n{} vs {}\n\n⏰ {}",
+        "Va a comenzar! ⚽\n\n{} - {}\n\n⏰ A las {}",
+        "⚽ ESTÁ POR COMENZAR\n\n{} - {}\n\n⏰ {}"
     ]
 }
