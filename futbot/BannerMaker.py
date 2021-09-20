@@ -14,6 +14,8 @@ class BannerMaker:
         try:
             if not match.team_1.team_id or not match.team_2.team_id:
                 raise Exception("IDs not specified or not str type")
+            if not self._url_teams:
+                raise Exception("URL teams not specified")
             
             image1 = self.get_team_badge(match.team_1.team_id)
             image2 = self.get_team_badge(match.team_2.team_id)
