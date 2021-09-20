@@ -1,8 +1,8 @@
 ''' Metric module: updates metrics values '''
 
 from typing import Dict
-import src.util.files as fs
-import src.util.date as date_util
+import futbot.util.files as fs
+import futbot.util.date as date_util
 
 METRICS_PATH = './metrics.json'
 
@@ -42,7 +42,7 @@ def update_metric(metric_name: str, new_value: int) -> None:
         metrics[LAST_UPDATE] = str(date_util.get_actual_datetime())
         fs.write_json_file(metrics, METRICS_PATH)
         print('METRICS -> [{}] metric updated to [{}]'.format(metric_name, new_value))
-    
+
 def increase_metric(metric_name: str, increment: int) -> None:
     """
         Increase the value of a metric
@@ -83,7 +83,6 @@ def get_metric(metric_name: str) -> int:
 
     print('Wrong metric_name! -> [{}]'.format(metric_name))
     return None
-
 
 def read_or_create_metric() -> Dict:
     """
