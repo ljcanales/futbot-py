@@ -1,6 +1,7 @@
 [![GitHub license](https://img.shields.io/github/license/ljcanales/FutBot)](https://github.com/ljcanales/FutBot/blob/master/LICENSE)
 [![Twitter Follow](https://img.shields.io/twitter/follow/FutBot_?style=social)](https://twitter.com/FutBot_)
 # FutBot
+![photo](https://github.com/ljcanales/futbot-py/blob/master/outputs/futbot_200x200.png)
 
 Bot that posts matches via Twitter [Twitter](https://twitter.com/FutBot_) and [Instagram](https://www.instagram.com/futbot__/).
 
@@ -32,27 +33,46 @@ pip3 install -r requirements.txt
 # Configuration
 Environment variables.
 ```
-export API_KEY=...
-export API_SECRET=...
-export ACCESS_KEY=...
-export ACCESS_SECRET=...
-export UN_IG=...
-export P_IG=...
 export API_MATCHES=...
 export API_TEAMS=...
 ```
 
-Edit file `config_file.json` (true/false):
+# Usage
+```python
+from futbot import Bot
 
-```
-{
- "send_match_message": false,
- "tweet_match" : true,
- "post_story_match" : true,
- "update_config" : true
+bot_settings = {
+    'instagram' : {
+        'username' : '',
+        'password' : ''
+    },
+    'twitter': {
+        'api_key' : '',
+        'api_secret' : '',
+        'access_key' : '',
+        'access_secret' : ''
+    },
+    'uri' : {
+        'api_matches' : '',
+        'api_teams' : ''
+    },
+    'config' : {
+        "send_match_message": False,
+        "tweet_match" : True,
+        "post_story_match" : False,
+        "update_config" : True
+    }
 }
-```
 
+bot = Bot(settings=bot_settings)
+bot.save_settings('./bot-settings.json')
+```
+Next time
+```python
+from futbot import Bot
+
+bot = Bot(settings_path='./bot-settings.json')
+```
 # Accounts
 
 - Twitter: [@FutBot_](https://twitter.com/FutBot_)
