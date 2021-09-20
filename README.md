@@ -52,10 +52,6 @@ bot_settings = {
         'access_key' : '',
         'access_secret' : ''
     },
-    'uri' : {
-        'api_matches' : '',
-        'api_teams' : ''
-    },
     'config' : {
         "send_match_message": False,
         "tweet_match" : True,
