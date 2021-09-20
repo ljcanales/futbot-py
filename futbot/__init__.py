@@ -1,7 +1,7 @@
 ''' FutBot Module '''
 
 from futbot.BannerMaker import BannerMaker
-from futbot.util import metrics, text
+from futbot.util import metrics, text, files
 from futbot.util.date import get_actual_datetime
 import futbot.constants as constants # keys, paths, uri, etc
 
@@ -19,15 +19,23 @@ class Bot(
 ):
     ''' FutBot class - manage bot behavior '''
 
-    def __init__(self):
+    settings: dict = None
+    settings_path: str = None
+
+    def __init__(self, settings: dict = None, settings_path: str = None):
         print("\n\n[FutBot] STARTING... - " + str(get_actual_datetime().strftime('%d-%m-%Y %H:%M:%S')))
-        super().__init__()
+
+        if settings_path:
+            settings = files.read_json_file(settings_path)
+        self.settings = settings
+        self.settings_path = settings_path
+        super().__init__(**settings)
         self.banner_maker = BannerMaker(constants.uri.API_TEAMS)
 
     def update(self) -> None:
         ''' Handle bot update functions '''
 
-        self.update_config()
+        self.update_config(self.settings_path)
 
         super().update()
 
@@ -73,3 +81,10 @@ class Bot(
         # CLEAR LISTS
         self.matches_to_post.clear()
         self.tours_to_post.clear()
+    
+    def save_settings(self, path: str):
+        if 'instagram' in self.settings:
+            self.settings['instagram']['settings'] = self.ig_get_settings()
+        self.settings['config'] = self.get_config()
+        files.write_json_file(data=self.settings.copy(), path_file=path)
+        self.settings_path = path

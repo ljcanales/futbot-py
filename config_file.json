@@ -1,6 +1,0 @@
-{
- "send_match_message": true,
- "tweet_match" : true,
- "post_story_match" : true,
- "update_config" : true
-}

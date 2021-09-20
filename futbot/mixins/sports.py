@@ -15,9 +15,9 @@ class SportsMixin(BotModel):
     tours_to_post: List[Tournament] = []
     matches_to_post: List[Match] = []
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         self.__uri = uri.API_MATCHES
-        super().__init__()
+        super().__init__(**kwargs)
 
     def update(self):
         if get_actual_datetime().hour < 9:

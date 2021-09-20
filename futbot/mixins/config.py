@@ -1,31 +1,30 @@
-from typing import Dict
-from futbot.util.files import read_json_file, write_json_file
-from futbot.constants import file_path
+from futbot.util.files import read_json_file
 from futbot.types import ConfigData
 
 class ConfigMixin():
     _config: ConfigData
 
-    def __init__(self):
-        self._config = self.__read_config()
-        super().__init__()
-    
-    def __read_config(self) -> ConfigData:
-        print('[CONFIG] Reading config file')
-        data: Dict = read_json_file(file_path.CONFIG)
-        if data:
-            return ConfigData(**data)
+    def __init__(self, **kwargs):
+        if 'config' in kwargs.keys():
+            print('[CONFIG] Reading config')
+            self._config = ConfigData(**kwargs['config'])
         else:
-            default_config: ConfigData = ConfigData()
-            write_json_file(default_config.dict(), file_path.CONFIG)
-            print('[CONFIG] New config file created')
-            return default_config
-    
-    def update_config(self) -> None:
+            print('[CONFIG] Loading default config')
+            self._config = ConfigData()
+        #super().__init__(**kwargs)
+
+    def get_config(self) -> dict:
+        return self._config.dict().copy()
+
+    def update_config(self, settings_path = None) -> None:
         ''' update configuration, if update_config is true '''
 
-        if self._config and self._config.update_config:
-            self._config = self.__read_config()
+        if self._config and self._config.update_config and settings_path:
+            print('[CONFIG] Updating config from file')
+            data: dict = read_json_file(settings_path)
+            if data and 'config' in data.keys():
+                self._config = ConfigData(**data['config'])
+                print('[CONFIG] Config updated')
 
     def is_activated(self, config_name: str) -> bool:
         ''' Check config state given by parameter '''

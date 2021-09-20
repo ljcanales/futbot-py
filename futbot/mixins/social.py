@@ -1,7 +1,7 @@
-import os, re
+import re
 from instagrapi import Client
 import tweepy
-from futbot.constants import file_path, ig_keys, tw_keys, time
+from futbot.constants import file_path, time
 
 from typing import List
 from futbot.types import Match, BotModel
@@ -12,40 +12,35 @@ import futbot.util.files as fs
 class FutBotInstagramMixin(BotModel):
     insta_cl: Client = None
 
-    def __init__(self):
-        self.ig_login()
-        super().__init__()
-        pass
+    def __init__(self, **kwargs):
+        try:
+            print('[IG] Connecting...')
+            required_args = ['username','password', 'settings']
+            if not set(kwargs['instagram'].keys()) <= set(required_args):
+                raise Exception('instagram settings not specified')
+            if 'instagram' in kwargs.keys() and 'settings' in kwargs['instagram'].keys():
+                print('[IG] Credentials found...')
+                # try:
+                self.insta_cl = Client(settings=kwargs['instagram']['settings'])
+                self.insta_cl.login(kwargs['instagram']['username'], kwargs['instagram']['password'], relogin=True)
+                print('[IG] Logged in with saved credentials...')
+                # except:
+                #     print('[IG] Creating new credentials...')
+                #     self.insta_cl = Client()
+                #     self.insta_cl.login(kwargs['instagram']['username'], kwargs['instagram']['password'], relogin=True)
+            else:
+                print('[IG] Credentials not found...')
+                print('[IG] Creating new credentials...')
+                self.insta_cl = Client()
+                self.insta_cl.login(kwargs['instagram']['username'], kwargs['instagram']['password'], relogin=True)
+            print('[IG] Connected')
+        except Exception as exception:
+            print("Error in FutBotInstagramMixin.__init__() ", str(exception))
+        super().__init__(**kwargs)
 
     def update(self):
         super().update()
         pass
-
-    def ig_login(self) -> None:
-        print('[IG] Connecting...')
-        if self.ig_is_logged():
-            print('[IG] already logged!')
-            return
-        if os.path.exists(file_path.IG_CREDENTIALS):
-            print('[IG] Credentials found...')
-            try:
-                self.insta_cl = Client()
-                self.insta_cl.load_settings(file_path.IG_CREDENTIALS)
-                self.insta_cl.login(ig_keys.USER_NAME, ig_keys.PASSWORD, relogin=True)
-                print('[IG] Logged in with saved credentials...')
-            except:
-                print('[IG] Creating new credentials...')
-                os.remove(file_path.IG_CREDENTIALS)
-                self.insta_cl = Client()
-                self.insta_cl.login(ig_keys.USER_NAME, ig_keys.PASSWORD, relogin=True)
-                self.insta_cl.dump_settings(file_path.IG_CREDENTIALS)
-        else:
-            print('[IG] Credentials not found...')
-            print('[IG] Creating new credentials...')
-            self.insta_cl = Client()
-            self.insta_cl.login(ig_keys.USER_NAME, ig_keys.PASSWORD, relogin=True)
-            self.insta_cl.dump_settings(file_path.IG_CREDENTIALS)
-        print('[IG] Connected')
 
     def ig_logout(self) -> None:
         self.insta_cl.logout()
@@ -55,6 +50,11 @@ class FutBotInstagramMixin(BotModel):
         if self.insta_cl:
             return True
         return False
+    
+    def ig_get_settings(self) -> dict:
+        if self.insta_cl:
+            return self.insta_cl.get_settings().copy()
+        return {}
     
     def ig_post_story(self, path: str) -> bool:
         try:
@@ -76,18 +76,22 @@ class FutBotTwitterMixin(BotModel):
     _last_mention_id: int = 1
     _my_user_id: int = None
 
-    def __init__(self) -> None:
+    def __init__(self, **kwargs) -> None:
         print('[TW] Connecting...')
         try:
-            #authentication
-            auth = tweepy.OAuthHandler(tw_keys.API_KEY, tw_keys.API_SECRET)
-            auth.set_access_token(tw_keys.ACCESS_KEY, tw_keys.ACCESS_SECRET)
-            self._api_connection = tweepy.API(auth, wait_on_rate_limit = True, wait_on_rate_limit_notify = True)
-            self._my_user_id = self._api_connection.me().id
-            print('[TW] Connected')
+            required_args = ['api_key','api_secret','access_key','access_secret']
+            if 'twitter' in kwargs.keys() and set(kwargs['twitter'].keys()) <= set(required_args):
+                #authentication
+                auth = tweepy.OAuthHandler(kwargs['twitter']['api_key'], kwargs['twitter']['api_secret'])
+                auth.set_access_token(kwargs['twitter']['access_key'], kwargs['twitter']['access_secret'])
+                self._api_connection = tweepy.API(auth, wait_on_rate_limit = True, wait_on_rate_limit_notify = True)
+                self._my_user_id = self._api_connection.me().id
+                print('[TW] Connected')
+            else:
+                raise Exception('twitter settings not specified')
         except BaseException as exception:
-            print("Error in FutBotTwitter.__init__()", str(exception))
-        super().__init__()
+            print("Error in FutBotTwitter.__init__() ", str(exception))
+        super().__init__(**kwargs)
     
     def update(self) -> None:
         #self.__tw_check_mentions()
