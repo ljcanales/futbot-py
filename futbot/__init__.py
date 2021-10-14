@@ -61,7 +61,7 @@ class Bot(
                     print('\n[FutBot] Posting match -- {} vs {} --'.format(match.team_1.name, match.team_2.name))
 
                     match_text = text.match_to_text.full_info(match)
-                    match_text += self.tw_get_screen_names([match.team_1.account_id, match.team_2.account_id])
+                    #match_text += self.tw_get_screen_names([match.team_1.account_id, match.team_2.account_id])
 
                     banners = self.banner_maker.get_banners(match)
 
