@@ -7,7 +7,7 @@ from .util.date import string_to_datetime
 
 def extract_teams(data) -> List[Team]:
     data = re.split('(?:\s*[\w|\s]*final[\w|\s]*[:|-]{1}\s+)|(?:\s*vs.?\s*)|(?:\s*-\s*)|(?:\s*\([\w|\s]*final[\w|\s]*\)\s*)', data)
-    data = [x for x in data if x != '']
+    data = [x.strip() for x in data if x != '']
     assert len(data) == 2, 'extract_teams failed'
     teams: List[Team] = []
     teams_info = read_json_file(file_path.CLUB_INFO)
