@@ -38,7 +38,7 @@ def extract_tournament(data) -> Tournament:
     tour_data['id'] = data['id']
     tour_data['name'] = data['nombre']
     tour_data['date'] = string_to_datetime(data["primerFecha"], '%Y-%m-%d %H:%M:%S')
-    matches = []
+    matches: List[Match] = []
     for event in data['eventos']:
         event['tour_id'] = data['id']
         event['tour_name'] = data['nombre']
