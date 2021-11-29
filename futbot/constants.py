@@ -1,4 +1,3 @@
-from os import environ
 from datetime import timezone, timedelta
 
 class file_path:
@@ -6,8 +5,7 @@ class file_path:
     CLUB_INFO = './clubsid.json'
 
 class uri:
-    API_MATCHES = environ['API_MATCHES']
-    API_TEAMS = environ['API_TEAMS']
+    SPORTS_AGENDA = 'https://www.tycsports.com/agenda-deportiva-hoy.html'
 
 class time:
     TIME_ZONE = timezone(timedelta(hours=-3)) #Argentina UTC-3
@@ -17,5 +15,11 @@ TOURNAMENTS_IDS = [
     '3',    # CL
     '1324', # CA
     '14',   # CARG
-    '1247'  # ESQ
 ]
+
+ID_BIND_TYC = {
+    '1346': 'Liga Profesional de Fútbol', # LPA
+    # '3',    # CL
+    # '1324', # CA
+    '14': 'Copa Argentina',   # CARG
+}
