@@ -1,4 +1,5 @@
 import re
+from unicodedata import normalize
 from typing import List
 from .types import Match, Tournament, Team
 from .constants import file_path, ID_BIND_TYC
@@ -82,7 +83,9 @@ def extract_match_v2(data: HtmlElement, tour_id: str, tour_name: str) -> Match:
     })
 
 def extract_team_v2(data: HtmlElement) -> Team:
+    team_name = data.xpath(".//span[contains(@class,'teamDesktop')]/text()")[0]
     return Team(**{
-        'name': data.xpath(".//span[contains(@class,'teamDesktop')]/text()")[0],
-        'img_url': data.xpath(".//span[contains(@class,'escudo')]/img/@src")[0]
+        'name': team_name,
+        'img_url': data.xpath(".//span[contains(@class,'escudo')]/img/@src")[0],
+        'hashtag': re.sub("(?:[\u0300-\u036f])|(?:[\u00b4|'|\s])", '', normalize('NFD', team_name))
     })

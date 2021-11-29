@@ -8,6 +8,7 @@ class Team(BaseModel):
     account_id: Optional[str]
     team_id: Optional[str]
     img_url: Optional[str]
+    hashtag: str
 
 class Match(BaseModel):
     tour_id: str

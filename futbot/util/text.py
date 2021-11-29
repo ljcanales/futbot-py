@@ -18,7 +18,7 @@ class match_to_text:
         if match.tv:
             tt += '📺 {}\n'.format(" - ".join(match.tv))
         
-        tt += '\n#{} #{}\n{}\n'.format(match.team_1.name.replace(" ", ""), match.team_2.name.replace(" ", ""), hashtag)
+        tt += '\n#{} #{}\n{}\n'.format(match.team_1.hashtag, match.team_2.hashtag, hashtag)
 
         return tt
     
