@@ -1,29 +1,25 @@
 from typing import Dict, List, Tuple
-from .types import Match
+from .types import Match, Team
+from unicodedata import normalize
 from PIL import Image, ImageDraw, ImageFont
 from textwrap import wrap
 from requests import get
 from futbot.util.date import WEEK_DAYS
+from futbot.constants import uri
+import re
 
 class BannerMaker:
-    def __init__(self, url_teams: str):
-        self._url_teams = url_teams
 
     def get_banners(self, match: Match) -> Dict[str, str]:
         img_paths = {'horizontal': '', 'vertical': ''}
-        try:
-            if not match.team_1.team_id or not match.team_2.team_id:
-                raise Exception("IDs not specified or not str type")
-            if not self._url_teams:
-                raise Exception("URL teams not specified")
-            
-            image1 = self.get_team_badge(match.team_1.team_id)
-            image2 = self.get_team_badge(match.team_2.team_id)
+        try:            
+            image1 = self.get_team_badge(match.team_1)
+            image2 = self.get_team_badge(match.team_2)
 
             img_paths['horizontal'] = self.get_horizontal_banner(image1, image2)
             img_paths['vertical'] = self.get_vertical_banner(image1, image2, match)
-        except:
-            pass
+        except Exception as e:
+            print(e)
 
         return img_paths
 
@@ -32,15 +28,18 @@ class BannerMaker:
         try:
             # concatenate
             middle_image = Image.open('./outputs/middle_img.png')
+            image1 = image1.resize((390,390))
+            image2 = image2.resize((390,390))
 
-            width_final = int((image1.width + image2.width) * 1.40)
-            height_final = int(image1.height * 1.60)
             #final_img = Image.new('RGB', (width_final, height_final), (3, 64, 97))
             final_img = Image.open('./outputs/default_bg.jpg')
+            width_final = int(final_img.width)
+            height_final = int(final_img.height)
             #final_img = final_img.resize((width_final, height_final))
 
-            final_img.paste(image1, (int((width_final / 2 - image1.width) / 3), int((height_final - image1.height)/2)), image1)
-            final_img.paste(image2, (int((width_final / 2 + (width_final / 2 - image2.width) * 2 / 3)), int((height_final - image1.height)/2)), image2)
+
+            final_img.paste(image1, (int((width_final / 2 - image1.width) / 3), int((height_final - image1.height)/2)), image1.convert("RGBA"))
+            final_img.paste(image2, (int((width_final / 2 + (width_final / 2 - image2.width) * 2 / 3)), int((height_final - image1.height)/2)), image2.convert("RGBA"))
 
             final_img.paste(middle_image, (int((width_final - middle_image.width) / 2), int((height_final - middle_image.height) / 2)), middle_image)
 
@@ -57,8 +56,8 @@ class BannerMaker:
 
         try:
             # concatenate
-            image1 = image1.resize((370,370))
-            image2 = image2.resize((370,370))
+            image1 = image1.resize((350,350))
+            image2 = image2.resize((350,350))
 
             #final_img = Image.new('RGB', (width_final, height_final), (3, 64, 97))
             final_img = Image.open('./outputs/default_vertical_bg.jpg')
@@ -66,8 +65,8 @@ class BannerMaker:
             height_final = final_img.height
             
             txt = GenerateText((width_final, height_final), 'white', match)
-            final_img.paste(image1, (int((width_final / 2 - image1.width) / 3), int((height_final - image1.height)/2)), image1)
-            final_img.paste(image2, (int((width_final / 2 + (width_final / 2 - image2.width) * 2 / 3)), int((height_final - image1.height)/2)), image2)
+            final_img.paste(image1, (int((width_final / 2 - image1.width) / 3), int((height_final - image1.height)/2)), image1.convert("RGBA"))
+            final_img.paste(image2, (int((width_final / 2 + (width_final / 2 - image2.width) * 2 / 3)), int((height_final - image1.height)/2)), image2.convert("RGBA"))
             final_img.paste(txt,(0,0),txt)            
             
             img_path = './outputs/img_vertical_final.jpg'
@@ -79,12 +78,11 @@ class BannerMaker:
 
         return ''
 
-    def get_team_badge(self, id: str) -> Image.Image:
+    def get_team_badge(self, team: Team) -> Image.Image:
         try:
-            team_info = get(self._url_teams + id).json()
-            img_url = team_info['teams'][0]['strTeamBadge']
-            img = Image.open(get(img_url, stream=True).raw)
-            return img
+            if not team.img_url:
+                raise Exception('None img_url.')
+            return Image.open(get(team.img_url, stream=True).raw)
         except Exception as exception:
             raise Exception('ERROR: BannerMaker.get_team_badge - e: ', str(exception))
 
