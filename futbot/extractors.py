@@ -1,9 +1,10 @@
 import re
 from typing import List
 from .types import Match, Tournament, Team
-from .constants import file_path
+from .constants import file_path, ID_BIND_TYC
 from .util.files import read_json_file
-from .util.date import string_to_datetime
+from .util.date import get_actual_datetime, string_to_datetime, day_month_year_to_datetime
+from lxml.html import HtmlElement
 
 def extract_teams(data) -> List[Team]:
     data = re.split('(?:\s*[\w|\s]*[:|-]{1}\s+)|(?:\s*vs.?\s*)|(?:\s*-\s*)|(?:\s*\([\w|\s]*final[\w|\s]*\)\s*)', data)
@@ -45,3 +46,43 @@ def extract_tournament(data) -> Tournament:
         matches.append(extract_match(event))
     tour_data['matches'] = matches
     return Tournament(**tour_data)
+
+def extract_tournament_v2(data: HtmlElement, tours_ids: List[str]=None) -> List[Tournament]:
+    tours_names = [ID_BIND_TYC[id] for id in tours_ids if id in ID_BIND_TYC.keys()]
+    tours_condition = " or ".join([f"contains(text(), '{x}')" for x in tours_names])
+    today_info: HtmlElement = data.xpath(f"//div[@class='agendaWrap']//div[@class='container_fecha' and ./div[@class='agenda_top-date']/div[@class='tag_hoy']][1]")[0]
+    tours_info: List[HtmlElement] = today_info.xpath(f".//div[@class='container_competicion' and ./div[@class='agenda_top-title']/h3[{tours_condition}]]")
+    
+    tours: List[Tournament] = []
+    for x in tours_info:
+        tour_name: str = x.xpath("./div[@class='agenda_top-title']/h3/text()")[0]
+        tour_id: str = '0000'
+        tours.append(Tournament(**{
+            'id': tour_id,
+            'name': tour_name,
+            'date': day_month_year_to_datetime(today_info.xpath("./div[@class='agenda_top-date']/span/text()")[0]),
+            'matches': [extract_match_v2(event, tour_id, tour_name) for event in x.xpath(".//div[@class='agenda_eventoWrap']")]
+        }))
+
+    return tours
+
+def extract_match_v2(data: HtmlElement, tour_id: str, tour_name: str):
+    teams_info: List[HtmlElement] = data.xpath(".//h3[@class='agenda__match']/span[contains(@class,'agenda__match-team')]")
+    assert len(teams_info) == 2, 'extract_teams failed'
+    time_info = string_to_datetime(data.xpath(".//div[@class='agenda__time']/span/text()")[0], "%H:%M Hs")
+    tv_info: str = data.xpath(".//span[@class='transmitions']/text()")[0]
+    
+    return Match(**{
+        'tour_id': tour_id,
+        'tour_name': tour_name,
+        'time': get_actual_datetime().replace(hour=time_info.hour, minute=time_info.minute, second=time_info.second),
+        'team_1': extract_team_v2(teams_info[0]),
+        'team_2': extract_team_v2(teams_info[1]),
+        'tv': [x for x in re.split("(?:^TRANSMITE\s:\s)|(?:\s\\|\s)", tv_info) if x]
+    })
+
+def extract_team_v2(data: HtmlElement) -> Team:
+    return Team(**{
+        'name': data.xpath(".//span[contains(@class,'teamDesktop')]/text()")[0],
+        'img_url': data.xpath(".//span[contains(@class,'escudo')]/img/@src")[0]
+    })
