@@ -47,7 +47,7 @@ def extract_tournament(data) -> Tournament:
     tour_data['matches'] = matches
     return Tournament(**tour_data)
 
-def extract_tournament_v2(data: HtmlElement, tours_ids: List[str]=None) -> List[Tournament]:
+def extract_tournaments_v2(data: HtmlElement, tours_ids: List[str]=None) -> List[Tournament]:
     tours_names = [ID_BIND_TYC[id] for id in tours_ids if id in ID_BIND_TYC.keys()]
     tours_condition = " or ".join([f"contains(text(), '{x}')" for x in tours_names])
     today_info: HtmlElement = data.xpath(f"//div[@class='agendaWrap']//div[@class='container_fecha' and ./div[@class='agenda_top-date']/div[@class='tag_hoy']][1]")[0]
@@ -66,7 +66,7 @@ def extract_tournament_v2(data: HtmlElement, tours_ids: List[str]=None) -> List[
 
     return tours
 
-def extract_match_v2(data: HtmlElement, tour_id: str, tour_name: str):
+def extract_match_v2(data: HtmlElement, tour_id: str, tour_name: str) -> Match:
     teams_info: List[HtmlElement] = data.xpath(".//h3[@class='agenda__match']/span[contains(@class,'agenda__match-team')]")
     assert len(teams_info) == 2, 'extract_teams failed'
     time_info = string_to_datetime(data.xpath(".//div[@class='agenda__time']/span/text()")[0], "%H:%M Hs")
