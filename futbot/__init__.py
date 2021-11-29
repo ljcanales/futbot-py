@@ -30,7 +30,7 @@ class Bot(
         self.settings = settings
         self.settings_path = settings_path
         super().__init__(**settings)
-        self.banner_maker = BannerMaker(constants.uri.API_TEAMS)
+        self.banner_maker = BannerMaker()
 
     def update(self) -> None:
         ''' Handle bot update functions '''
