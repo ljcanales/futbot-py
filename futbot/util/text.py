@@ -8,7 +8,7 @@ class match_to_text:
     @staticmethod
     def full_info(match: Match) -> str:
         tt = ""
-        #hashtag = ""
+        hashtag = ""
         if match.tour_id in HASTAGS_BY_ID.keys():
             hashtag = " ".join(HASTAGS_BY_ID[match.tour_id])
 
