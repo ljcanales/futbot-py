@@ -84,7 +84,7 @@ class FutBotTwitterMixin(BotModel):
                 #authentication
                 auth = tweepy.OAuthHandler(kwargs['twitter']['api_key'], kwargs['twitter']['api_secret'])
                 auth.set_access_token(kwargs['twitter']['access_key'], kwargs['twitter']['access_secret'])
-                self._api_connection = tweepy.API(auth, wait_on_rate_limit = True, wait_on_rate_limit_notify = True)
+                self._api_connection = tweepy.API(auth, wait_on_rate_limit = True)
                 self._my_user_id = self._api_connection.me().id
                 print('[TW] Connected')
             else:
@@ -174,7 +174,7 @@ class FutBotTwitterMixin(BotModel):
         ''' Returns date of last tweet in user timeline '''
 
         try:
-            last_status = self._api_connection.user_timeline(id=self._my_user_id, count=1, exclude_replies=True, exclude_rts=True,)[0]
+            last_status = self._api_connection.user_timeline(id=self._my_user_id, count=1, exclude_replies=True, include_rts=False,)[0]
             return last_status.created_at.astimezone(time.TIME_ZONE).date()
         except Exception as exception:
             raise Exception("ERROR: get_last_datetime() - e=" + str(exception)) from exception
