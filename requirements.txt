@@ -1,6 +1,7 @@
 pydantic
 DateTime
 requests
+lxml
 Pillow
 tweepy
 instagrapi
