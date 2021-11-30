@@ -1,13 +1,13 @@
 import re
 from instagrapi import Client
 import tweepy
-from futbot.constants import file_path, time
+from futbot.constants import time
 
 from typing import List
 from futbot.types import Match, BotModel
 
 from futbot.BannerMaker import BannerMaker
-import futbot.util.files as fs
+from futbot.util.text import match_to_text
 
 class FutBotInstagramMixin(BotModel):
     insta_cl: Client = None
@@ -131,24 +131,13 @@ class FutBotTwitterMixin(BotModel):
     def tw_send_match_messages(self, matches: List[Match]) -> int:
         ''' Sends match info to every follower '''
 
-        templates = fs.read_json_file(file_path.TEXT_TEMPLATES)
-        cant_templates = 0
+        sent_messages: int = 0
 
-        if templates and len(templates['match_message']) > 0:
-            templates = templates['match_message']
-            cant_templates = len(templates)
-        else:
-            print('Message templates not found, check text_templates.json file')
-            return 0
-        
-        sent_messages = 0
-        
         try:
             for follower in tweepy.Cursor(self._api_connection.followers,'FutBot_').items():
                 for match in matches:
-                    #text = 'Hola @{}\n\n'.format(follower.screen_name)
-                    text = ''
-                    text += match.message_by_template(templates[sent_messages % cant_templates])
+                    text = 'Hola @{}\n\n'.format(follower.screen_name)
+                    text += match_to_text.message_info(match)
                     if match.tweet_id:
                         text += '\nhttps://twitter.com/FutBot_/status/{}'.format(str(match.tweet_id))
                     self._api_connection.send_direct_message(follower.id_str, text)
@@ -157,7 +146,7 @@ class FutBotTwitterMixin(BotModel):
             print("ERROR: tw_send_match_messages() - e=" + str(exception))
         finally:
             return sent_messages
-    
+
     def tw_get_screen_names(self, account_id_list: List[str]) -> str:
         ''' Returns string containing sreen_names for each key in list given by parameter '''
 

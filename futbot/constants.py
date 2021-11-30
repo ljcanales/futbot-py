@@ -1,7 +1,6 @@
 from datetime import timezone, timedelta
 
 class file_path:
-    TEXT_TEMPLATES = './text_templates.json'
     CLUB_INFO = './clubsid.json'
 
 class uri:
