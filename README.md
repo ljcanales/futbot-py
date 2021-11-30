@@ -30,13 +30,6 @@ Install dependencies.
 pip3 install -r requirements.txt
 ```
 
-# Configuration
-Environment variables.
-```
-export API_MATCHES=...
-export API_TEAMS=...
-```
-
 # Usage
 ```python
 from futbot import Bot
