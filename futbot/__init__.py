@@ -3,7 +3,6 @@
 from futbot.BannerMaker import BannerMaker
 from futbot.util import metrics, text, files
 from futbot.util.date import get_actual_datetime
-import futbot.constants as constants # keys, paths, uri, etc
 
 # mixins
 from futbot.mixins.social import FutBotInstagramMixin, FutBotTwitterMixin
