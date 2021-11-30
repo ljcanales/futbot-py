@@ -105,7 +105,7 @@ class FutBotTwitterMixin(BotModel):
             print('[TW] Tweeting status...')
             status_id = None
             if img_path:
-                status_id = self._api_connection.update_with_media(status = new_status, filename = img_path, in_reply_to_status_id = reply_to, auto_populate_reply_metadata = True).id_str
+                status_id = self._api_connection.update_status_with_media(status = new_status, filename = img_path, in_reply_to_status_id = reply_to, auto_populate_reply_metadata = True).id_str
             else:
                 status_id = self._api_connection.update_status(status = new_status, in_reply_to_status_id = reply_to, auto_populate_reply_metadata = True).id_str
             print('[TW] Status tweeted')
