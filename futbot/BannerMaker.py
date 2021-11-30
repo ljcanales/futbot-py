@@ -1,12 +1,11 @@
 from typing import Dict, List, Tuple
+
+from futbot.constants import font_path
 from .types import Match, Team
-from unicodedata import normalize
 from PIL import Image, ImageDraw, ImageFont
 from textwrap import wrap
 from requests import get
 from futbot.util.date import WEEK_DAYS
-from futbot.constants import uri
-import re
 
 class BannerMaker:
 
@@ -35,8 +34,6 @@ class BannerMaker:
             final_img = Image.open('./outputs/default_bg.jpg')
             width_final = int(final_img.width)
             height_final = int(final_img.height)
-            #final_img = final_img.resize((width_final, height_final))
-
 
             final_img.paste(image1, (int((width_final / 2 - image1.width) / 3), int((height_final - image1.height)/2)), image1.convert("RGBA"))
             final_img.paste(image2, (int((width_final / 2 + (width_final / 2 - image2.width) * 2 / 3)), int((height_final - image1.height)/2)), image2.convert("RGBA"))
@@ -132,9 +129,9 @@ def GenerateText(size: Tuple[int,int], fg: str, match: Match):
     draw = ImageDraw.Draw(canvas)
 
     # Fonts
-    font_equipos = ImageFont.truetype('./fonts/Roboto-Black.ttf', 110)
-    font_vs = ImageFont.truetype('./fonts/Roboto-Black.ttf', 70)
-    font_info = ImageFont.truetype('./fonts/Roboto-Light.ttf', 50)
+    font_equipos = ImageFont.truetype(font_path.ROBOTO_BLACK, 110)
+    font_vs = ImageFont.truetype(font_path.ROBOTO_BLACK, 70)
+    font_info = ImageFont.truetype(font_path.ROBOTO_LIGHT, 50)
 
     w_text, h_text = draw.textsize(match.team_1.name, font=font_equipos)
     draw.text(((width-w_text)/2, h_acc), match.team_1.name, fg, font=font_equipos)
@@ -159,11 +156,12 @@ def GenerateText(size: Tuple[int,int], fg: str, match: Match):
     draw.text((20, h_acc), 'Hora: {}'.format(match.time.strftime('%H:%M')), fg, font=font_info)
     h_acc = h_acc + h_text + 60
 
-    tv_text = wrap('TV: ' + ' - '.join(match.tv), 40)
-    for t in tv_text:
-        draw.text((20, h_acc), t, fg, font=font_info)
-        w_text, h_text = draw.textsize(t, font=font_info)
-        h_acc = h_acc + h_text + 20
+    if match.tv:
+        tv_text = wrap('TV: ' + ' - '.join(match.tv), 40)
+        for t in tv_text:
+            draw.text((20, h_acc), t, fg, font=font_info)
+            w_text, h_text = draw.textsize(t, font=font_info)
+            h_acc = h_acc + h_text + 20
 
     return canvas
 
