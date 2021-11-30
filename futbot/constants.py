@@ -3,6 +3,9 @@ from datetime import timezone, timedelta
 class file_path:
     CLUB_INFO = './clubsid.json'
 
+class font_path:
+    ROBOTO_BLACK = './fonts/Roboto-Black.ttf'
+    ROBOTO_LIGHT = './fonts/Roboto-Light.ttf'
 class uri:
     SPORTS_AGENDA = 'https://www.tycsports.com/agenda-deportiva-hoy.html'
 
