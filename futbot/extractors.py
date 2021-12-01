@@ -71,7 +71,7 @@ def extract_match_v2(data: HtmlElement, tour_id: str, tour_name: str) -> Match:
     teams_info: List[HtmlElement] = data.xpath(".//h3[@class='agenda__match']/span[contains(@class,'agenda__match-team')]")
     assert len(teams_info) == 2, 'extract_teams failed'
     time_info = string_to_datetime(data.xpath(".//div[@class='agenda__time']/span/text()")[0], "%H:%M Hs")
-    tv_info: str = data.xpath(".//span[@class='transmitions']/text()")[0]
+    tv_info: str = data.xpath(".//span[@class='transmitions']/text()")
     
     return Match(**{
         'tour_id': tour_id,
@@ -79,7 +79,7 @@ def extract_match_v2(data: HtmlElement, tour_id: str, tour_name: str) -> Match:
         'time': get_actual_datetime().replace(hour=time_info.hour, minute=time_info.minute, second=time_info.second),
         'team_1': extract_team_v2(teams_info[0]),
         'team_2': extract_team_v2(teams_info[1]),
-        'tv': [x for x in re.split("(?:^TRANSMITE\s:\s)|(?:\s\\|\s)", tv_info) if x]
+        'tv': [x for x in re.split("(?:^TRANSMITE\s:\s)|(?:\s\\|\s)", tv_info[0]) if x] if tv_info else []
     })
 
 def extract_team_v2(data: HtmlElement) -> Team:
