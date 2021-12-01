@@ -23,5 +23,5 @@ ID_BIND_TYC = {
     '1346': 'Liga Profesional de Fútbol', # LPA
     # '3',    # CL
     # '1324', # CA
-    '14': 'Copa Argentina',   # CARG
+    '14': 'Copa Argentina'   # CARG
 }
