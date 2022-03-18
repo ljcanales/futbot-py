@@ -17,11 +17,15 @@ TOURNAMENTS_IDS = [
     '3',    # CL
     '1324', # CA
     '14',   # CARG
+    '1437', # TDC
+    '1247'  # ECS
 ]
 
 ID_BIND_TYC = {
     '1346': 'Liga Profesional de Fútbol', # LPA
-    # '3',    # CL
+    '3': 'Copa Libertadores',    # CL
     # '1324', # CA
-    '14': 'Copa Argentina'   # CARG
+    '14': 'Copa Argentina',   # CARG
+    '1437': 'Trofeo de Campeones',
+    '1247': 'Eliminatorias CONMEBOL'
 }
