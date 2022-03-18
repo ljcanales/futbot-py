@@ -1,6 +1,7 @@
 import re
 from unicodedata import normalize
 from typing import List
+import unicodedata
 from .types import Match, Tournament, Team
 from .constants import file_path, ID_BIND_TYC
 from .util.files import read_json_file
@@ -87,5 +88,5 @@ def extract_team_v2(data: HtmlElement) -> Team:
     return Team(**{
         'name': team_name,
         'img_url': data.xpath(".//span[contains(@class,'escudo')]/img/@src")[0],
-        'hashtag': re.sub("(?:[\u0300-\u036f])|(?:[\u00b4|'|\s])", '', normalize('NFD', team_name))
+        'hashtag': re.sub('[^A-Za-z0-9]+', '', unicodedata.normalize('NFD', team_name))
     })
